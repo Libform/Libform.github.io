@@ -3,45 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>林晨 | 独立设计师</title> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>林晨 | 视觉设计</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400&family=Noto+Serif+SC:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;500;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         /* ====================
-           1. 变量定义
+           1. 极简变量
            ==================== */
         :root {
-            --bg-color: #050505;
-            --text-main: #ffffff;
-            --text-sub: #a0a0a0;
-            --border-color: rgba(255,255,255,0.1);
-            --font-heading: 'Playfair Display', 'Noto Serif SC', serif; 
-            --font-body: 'Lato', 'Noto Sans SC', sans-serif;
+            /* 纸张白：一种很浅的暖灰，比纯白更高级 */
+            --bg-color: #f9f9f9; 
+            /* 深炭灰：不要用纯黑#000，太刺眼 */
+            --text-main: #222222; 
+            /* 中灰：用于辅助信息 */
+            --text-sub: #666666; 
+            
+            --font-heading: 'Playfair Display', 'Noto Serif SC', serif;
+            --font-body: 'Inter', 'Noto Serif SC', sans-serif;
+            
+            --container-width: 1200px;
         }
 
         /* ====================
-           2. 全局重置
+           2. 基础重置
            ==================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body, html {
+        body {
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: var(--font-body);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased; /* 让字体在Mac上更细更清晰 */
         }
 
-        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
-        ul { list-style: none; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+
+        img { width: 100%; display: block; }
 
         /* ====================
-           3. 导航栏
+           3. 极简导航 (固定在顶部)
            ==================== */
         nav {
             position: fixed;
@@ -52,410 +56,232 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: rgba(249, 249, 249, 0.9); /* 轻微毛玻璃 */
+            backdrop-filter: blur(10px);
             z-index: 100;
-            mix-blend-mode: difference;
         }
 
         .logo {
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+        .nav-links a.active { color: var(--text-main); }
+
+        /* ====================
+           4. 头部介绍 (左对齐，大量留白)
+           ==================== */
+        header.hero {
+            padding: 220px 60px 120px;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        /* 这种超大号文字是瑞士风格的精髓 */
+        h1.hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3.5rem, 6vw, 5.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            color: #111;
+        }
+
+        p.hero-intro {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            max-width: 500px;
+            margin-top: 20px;
+            font-weight: 300;
+        }
+
+        /* ====================
+           5. 作品展示 (网格布局)
+           ==================== */
+        section.gallery {
+            padding: 0 60px 150px;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-sub);
+            margin-bottom: 60px;
+            display: block;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 简单大气的双列布局 */
+            gap: 100px 60px; /* 拉大行间距，解决“乱”的问题 */
+        }
+
+        /* 让偶数项向下偏移，打破呆板 */
+        .grid-item:nth-child(even) {
+            margin-top: 100px; 
+        }
+
+        .work-card {
+            cursor: pointer;
+        }
+
+        .img-container {
+            overflow: hidden;
+            margin-bottom: 25px;
+            /* 给图片一个极淡的阴影，增加层次 */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .work-img {
+            transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .work-card:hover .work-img {
+            transform: scale(1.03);
+        }
+
+        .work-info h3 {
             font-family: var(--font-heading);
             font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-        }
-
-        .nav-links a {
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.8);
-            position: relative;
-        }
-
-        .nav-links a:hover { color: #fff; }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 1px;
-            bottom: -5px;
-            left: 0;
-            background-color: white;
-            transition: width 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
-
-        /* ====================
-           4. 个人主页 Hero
-           ==================== */
-        .hero {
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            /* 背景图：建议换成一张更有氛围感的、或者你个人的黑白肖像（如果有的话），或者这种抽象建筑图 */
-            background: url('https://images.unsplash.com/photo-1492571350019-22de08371fd3?q=80&w=2553&auto=format&fit=crop') no-repeat center center/cover;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); /* 加深遮罩，突出文字 */
-            z-index: 1;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            max-width: 900px;
-            padding: 0 20px;
-        }
-
-        .tagline {
-            font-size: 0.9rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--text-sub);
-            margin-bottom: 20px;
-            display: block;
-            animation: fadeInDown 1.5s ease;
-        }
-
-        h1 {
-            font-family: var(--font-heading);
-            font-size: clamp(3rem, 7vw, 5.5rem); /* 调整字体大小，更加优雅 */
-            line-height: 1.2;
-            margin-bottom: 30px;
             font-weight: 400;
-            animation: fadeInUp 1.5s ease;
-        }
-        
-        h1 span {
-            display: block;
-            font-family: var(--font-body);
-            font-size: 0.35em; 
-            font-weight: 300;
-            letter-spacing: 2px;
-            margin-top: 15px;
-            color: rgba(255,255,255,0.9);
+            margin-bottom: 5px;
         }
 
-        .scroll-indicator {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
+        .work-info span {
+            font-size: 0.9rem;
             color: var(--text-sub);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            animation: bounce 2s infinite;
         }
 
         /* ====================
-           5. 简介区域 (Bio) - 新增
+           6. 极简底栏
            ==================== */
-        .bio-section {
-            padding: 120px 60px 60px;
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .bio-text {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            line-height: 1.6;
-            color: var(--text-main);
-            margin-bottom: 40px;
-        }
-
-        .bio-sub {
-            font-size: 1rem;
-            color: var(--text-sub);
-            line-height: 1.8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* ====================
-           6. 精选作品 (Selected Works)
-           ==================== */
-        .content-section {
-            padding: 80px 60px 120px;
-            background-color: var(--bg-color);
-        }
-
-        .section-header {
-            max-width: 1400px;
-            margin: 0 auto 60px;
+        footer {
+            padding: 100px 60px;
+            border-top: 1px solid #eaeaea;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
+            background-color: white; /* 底部纯白区分 */
         }
 
-        .section-title {
-            font-family: var(--font-heading);
-            font-size: 2rem;
-            font-weight: 400;
-        }
-        
-        .section-more {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            letter-spacing: 1px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 80px 60px; /* 增加行间距 */
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .card {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            group: cursor;
-        }
-
-        .card-img-wrapper {
-            overflow: hidden;
-            width: 100%;
-            height: 450px; /* 拉长图片比例，更具杂志感 */
-        }
-
-        .card-img {
-            width: 100%;
-            height: 100%;
-            background-color: #1a1a1a;
-            object-fit: cover;
-            filter: grayscale(100%);
-            transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        .card:hover .card-img {
-            filter: grayscale(0%);
-            transform: scale(1.05);
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
-        }
-
-        .card-title {
-            font-family: var(--font-heading);
-            font-size: 1.4rem;
-            font-weight: 400;
-        }
-
-        .card-category {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-sub);
-        }
-
-        /* ====================
-           7. 个人底栏 (Footer)
-           ==================== */
-        footer {
-            background-color: #080808;
-            padding: 100px 60px 40px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .footer-cta h2 {
+        .contact-big {
             font-family: var(--font-heading);
             font-size: 3rem;
-            margin-bottom: 30px;
-            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            display: block;
+            color: var(--text-main);
         }
 
-        .footer-cta p {
+        .footer-info {
             color: var(--text-sub);
-            margin-bottom: 50px;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
         }
-
-        .email-link {
-            display: inline-block;
-            font-size: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            padding-bottom: 5px;
-            margin-bottom: 80px;
-        }
-        .email-link:hover { border-color: white; }
-
-        .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            color: #444;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 30px;
-        }
-        .social-links a { color: var(--text-sub); }
-        .social-links a:hover { color: white; }
 
         /* ====================
-           动画
+           移动端适配
            ==================== */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
-            40% {transform: translateY(-10px) translateX(-50%);}
-            60% {transform: translateY(-5px) translateX(-50%);}
-        }
-
-        /* 移动端适配 */
         @media (max-width: 768px) {
             nav { padding: 20px; }
-            .nav-links { display: none; }
-            h1 { font-size: 3rem; }
-            .bio-text { font-size: 1.4rem; }
-            .footer-cta h2 { font-size: 2rem; }
-            .footer-bottom { flex-direction: column-reverse; gap: 20px; align-items: center; }
+            header.hero { padding: 150px 20px 80px; }
+            section.gallery { padding: 0 20px 100px; }
+            .grid { grid-template-columns: 1fr; gap: 60px; }
+            .grid-item:nth-child(even) { margin-top: 0; }
+            footer { flex-direction: column; align-items: flex-start; gap: 40px; padding: 60px 20px; }
+            .contact-big { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">Lin.</div>
+        <div class="logo">Lin Chen.</div>
         <div class="nav-links">
-            <a href="#work">一些想法</a>
-            <a href="#about">关于我</a>
-            <a href="#contact">联系</a>
+            <a href="#" class="active">Work</a>
+            <a href="#">Profile</a>
+            <a href="#">Contact</a>
         </div>
     </nav>
 
-    <div class="hero">
-        <div class="hero-content">
-            <span class="tagline">Based in Shanghai</span>
-            
-            <h1>
-                LIN CHEN<br>
-                <span>Product Designer & Art Director</span>
-            </h1>
-        </div>
-        <div class="scroll-indicator">Scroll</div>
-    </div>
-
-    <section id="about" class="bio-section">
-        <p class="bio-text">
-            "设计不仅是视觉的愉悦，<br>更是对混乱世界的有序回应。"
+    <header class="hero">
+        <h1 class="hero-title">
+            Digital Designer <br>
+            & Art Director
+        </h1>
+        <p class="hero-intro">
+            你好，我是林晨。<br>
+            专注于为品牌构建清晰、理性的视觉系统。<br>
+            我相信好的设计是剔除一切噪音后的纯粹。
         </p>
-        <p class="bio-sub">
-            我24岁，我是一名目前拥有24年呼吸经验的人。
-        </p>
-    </section>
+    </header>
 
-    <section id="work" class="content-section">
-        <div class="section-header">
-            <h3 class="section-title">Selected Works</h3>
-            <a href="#" class="section-more">View Archive -></a>
-        </div>
+    <section class="gallery">
+        <span class="section-label">Selected Works 2023 — 2025</span>
 
-        <div class="grid-container">
+        <div class="grid">
             
-            <div class="card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2000&auto=format&fit=crop" class="card-img" alt="Work 1">
+            <div class="grid-item work-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1594913785232-fb9d2e737922?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 1">
                 </div>
-                <div class="card-meta">
-                    <h3 class="card-title">Muse Gallery</h3>
-                    <span class="card-category">UI / UX Design</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" class="card-img" alt="Work 2">
-                </div>
-                <div class="card-meta">
-                    <h3 class="card-title">Noir Perfume</h3>
-                    <span class="card-category">Branding</span>
+                <div class="work-info">
+                    <h3>Aesop Store</h3>
+                    <span>Space & Identity</span>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1545239351-ef35f43d514b?q=80&w=2574&auto=format&fit=crop" class="card-img" alt="Work 3">
+            <div class="grid-item work-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1506097425191-7ad538b29cef?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 2">
                 </div>
-                <div class="card-meta">
-                    <h3 class="card-title">Silence Architecture</h3>
-                    <span class="card-category">Photography</span>
+                <div class="work-info">
+                    <h3>Kinfolk Magazine</h3>
+                    <span>Editorial Design</span>
                 </div>
             </div>
 
-             <div class="card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?q=80&w=2574&auto=format&fit=crop" class="card-img" alt="Work 4">
+            <div class="grid-item work-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 3">
                 </div>
-                <div class="card-meta">
-                    <h3 class="card-title">Future Tech</h3>
-                    <span class="card-category">Web Design</span>
+                <div class="work-info">
+                    <h3>Mono Furniture</h3>
+                    <span>Product Photography</span>
+                </div>
+            </div>
+
+            <div class="grid-item work-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1620626330084-28a1fb742531?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 4">
+                </div>
+                <div class="work-info">
+                    <h3>Ceramic Art</h3>
+                    <span>Exhibition</span>
                 </div>
             </div>
 
         </div>
     </section>
 
-    <footer id="contact">
-        <div class="footer-content">
-            <div class="footer-cta">
-                <p>Have a project in mind?</p>
-                <h2>Let's Create Together.</h2>
-                <a href="mailto:hello@linchen.design" class="email-link">hello@linchen.design</a>
-            </div>
-
-            <div class="footer-bottom">
-                <span>&copy; 2025 Lin Chen.</span>
-                <div class="social-links">
-                    <a href="#">Weibo</a>
-                    <a href="#">Behance</a>
-                    <a href="#">Instagram</a>
-                    <a href="#">Dribbble</a>
-                </div>
-            </div>
+    <footer>
+        <div>
+            <a href="mailto:hello@lin.design" class="contact-big">hello@lin.design</a>
+            <p class="footer-info">Based in Shanghai. Available for freelance.</p>
+        </div>
+        <div class="footer-info">
+            © 2025 Lin Chen
         </div>
     </footer>
 
