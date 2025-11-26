@@ -3,448 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIBFORM | 构筑静谧</title>
+    <title>LIBFORM | 白 · 境</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400&family=Noto+Serif+SC:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Noto+Serif+SC:wght@300;400;600&family=Manrope:wght@300;400&display=swap" rel="stylesheet">
     
     <style>
         /* ====================
-           1. 极简美学系统变量
+           1. 极简白-变量系统
            ==================== */
         :root {
-            /* 这种 #0a0a0a 比纯黑 #000 更有“呼吸感” */
-            --bg-color: #0a0a0a;
-            --card-bg: #111111;
+            /* 背景不再是纯白，而是带一点点暖灰的“纸张色”，更护眼高级 */
+            --bg-color: #F7F7F5; 
             
-            /* 文字颜色分级 */
-            --text-primary: #e6e6e6; /* 略带暖色的白，不刺眼 */
+            /* 文字颜色 */
+            --text-primary: #1A1A1A; /* 深炭灰，比纯黑更有质感 */
             --text-secondary: #888888;
-            --text-accent: #C2A878; /* 低调的香槟金，仅作极少点缀 */
+            
+            /* 辅助线 */
+            --line-color: #E0E0E0;
 
-            /* 字体栈 */
-            --font-en-heading: 'Cinzel', serif; /* 罗马风格英文标题 */
-            --font-cn-heading: 'Noto Serif SC', serif; /* 思源宋体，核心高级感来源 */
-            --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-
-            /* 间距 */
-            --spacing-section: 160px; /* 极大的留白 */
+            /* 字体 */
+            --font-display: 'Italiana', serif; /* 极其优雅的西文衬线体 */
+            --font-cn: 'Noto Serif SC', serif; /* 思源宋体 */
+            --font-body: 'Manrope', sans-serif;
         }
 
         /* ====================
-           2. 全局基础
+           2. 基础重置
            ==================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
             font-family: var(--font-body);
-            line-height: 1.8; /* 宽松的行高 */
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased; /* 字体抗锯齿 */
+            -webkit-font-smoothing: antialiased;
         }
 
-        a { text-decoration: none; color: inherit; transition: opacity 0.4s ease; }
-        a:hover { opacity: 0.7; }
-        ul { list-style: none; }
-
-        /* 选中文本的颜色 - 金色背景 */
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        
+        /* 选中文字效果 */
         ::selection {
-            background: rgba(194, 168, 120, 0.3);
-            color: white;
+            background: #1a1a1a;
+            color: #fff;
         }
 
         /* ====================
-           3. 导航栏 (隐形设计)
+           3. 导航 (极简线条)
            ==================== */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 40px 6vw;
+            padding: 30px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            /* 顶部渐变遮罩，保证文字在任何背景下可见 */
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            mix-blend-mode: multiply; /* 让导航栏文字自然叠在背景上 */
         }
 
         .logo {
-            font-family: var(--font-en-heading);
-            font-size: 1.4rem;
-            letter-spacing: 4px;
+            font-family: var(--font-display);
+            font-size: 1.6rem;
             color: var(--text-primary);
-            font-weight: 600;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 50px;
-        }
-
-        .nav-links a {
-            font-size: 0.75rem;
+        .nav-toggle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
             letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            font-weight: 400;
+            cursor: pointer;
             position: relative;
-        }
-
-        .nav-links a.active, .nav-links a:hover {
-            color: var(--text-primary);
-        }
-
-        /* ====================
-           4. 英雄区域 (杂志排版风)
-           ==================== */
-        .hero {
-            height: 100vh;
-            width: 100%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        /* 背景处理：更深邃，更强调氛围 */
-        .hero-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            /* 这里的图片换成了更抽象的建筑光影 */
-            background: url('https://images.unsplash.com/photo-1485627941502-d2e6429a8af0?q=80&w=2670&auto=format&fit=crop') no-repeat center center/cover;
-            opacity: 0.6; /* 降低背景亮度 */
-            transform: scale(1.1);
-            animation: breathe 20s infinite alternate; /* 极缓慢的呼吸效果 */
-        }
-
-        @keyframes breathe {
-            from { transform: scale(1.05); }
-            to { transform: scale(1.15); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding-top: 60px;
-        }
-
-        .year-label {
-            display: block;
-            font-family: var(--font-body);
-            font-size: 0.7rem;
-            letter-spacing: 8px;
-            color: var(--text-accent);
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.5s;
-        }
-
-        /* 中英文混排标题 */
-        h1 {
-            font-family: var(--font-cn-heading);
-            font-weight: 300;
-            color: var(--text-primary);
-            margin-bottom: 50px;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.8s;
-        }
-
-        h1 .cn-title {
-            display: block;
-            font-size: clamp(3rem, 6vw, 5.5rem);
-            letter-spacing: 15px; /* 中文大间距显得大气 */
-            line-height: 1.3;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        h1 .en-subtitle {
-            display: block;
-            font-family: var(--font-en-heading);
-            font-size: clamp(1rem, 1.5vw, 1.2rem);
-            letter-spacing: 6px;
-            margin-top: 15px;
-            color: rgba(255,255,255,0.6);
-            font-style: normal;
-        }
-
-        /* 极简线条按钮 */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards 1.5s;
-        }
-
-        .line {
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(to bottom, var(--text-accent), transparent);
         }
         
-        .scroll-text {
-            font-size: 0.6rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+        /* 简单的菜单下划线动画 */
+        .nav-toggle::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; right: 0;
+            width: 30%;
+            height: 1px;
+            background: #000;
+            transition: width 0.3s;
+        }
+        .nav-toggle:hover::after { width: 100%; }
+
+        /* ====================
+           4. 英雄区域 (留白与文字张力)
+           ==================== */
+        .hero {
+            height: 90vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-cn);
+            font-weight: 300;
+            color: var(--text-primary);
+            line-height: 1.4;
+            margin-bottom: 2rem;
+            z-index: 2;
+        }
+
+        /* 巨大的背景字装饰，增加层次感 */
+        .bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 15vw; /* 随屏幕宽度的超大字体 */
+            color: rgba(0,0,0,0.03); /* 极淡的背景纹理 */
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .main-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .sub-title {
+            font-size: 1rem;
+            font-family: var(--font-body);
             color: var(--text-secondary);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-top: 20px;
         }
 
         /* ====================
-           5. 作品展示 (画廊布局)
+           5. 核心交互：黑白变彩色
            ==================== */
-        .gallery-section {
-            padding: var(--spacing-section) 8vw;
-            background: var(--bg-color);
-        }
-
-        .section-header {
-            margin-bottom: 100px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 1px solid #222;
-            padding-bottom: 30px;
-        }
-
-        .section-title {
-            font-family: var(--font-cn-heading);
-            font-size: 2.5rem;
-            font-weight: 300;
-        }
-
-        .section-title span {
-            display: block;
-            font-family: var(--font-body);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .grid-container {
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 40px;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
+            grid-template-columns: repeat(3, 1fr); /* 三列布局 */
+            gap: 60px;
         }
 
-        /* 卡片设计 */
-        .card {
+        .gallery-item {
             position: relative;
             cursor: pointer;
-            group: card-hover; /* 用于定位 */
+            margin-bottom: 60px; /* 增加底部间距 */
         }
 
-        /* 图片容器：增加 overflow hidden 以便做放大效果 */
-        .img-wrapper {
+        /* 错落布局：让第二列往下掉一点，打破死板 */
+        .gallery-item:nth-child(2) {
+            margin-top: 120px; 
+        }
+
+        .image-box {
             width: 100%;
-            height: 550px; /* 拉长比例，更显修长高级 */
+            height: 500px; /* 竖长图更时尚 */
             overflow: hidden;
-            margin-bottom: 25px;
             position: relative;
+            background: #eee;
         }
 
-        .card-img {
+        .image-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* 默认带有轻微的滤镜 */
-            filter:  brightness(0.8) contrast(1.1); 
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            
+            /* --- 核心交互代码 Start --- */
+            filter: grayscale(100%) contrast(0.95); /* 默认：纯黑白，对比度稍低显柔和 */
+            transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 丝滑过渡 */
+            /* --- 核心交互代码 End --- */
         }
 
-        /* 悬停效果：图片放大，亮度提升 */
-        .card:hover .card-img {
-            transform: scale(1.08);
-            filter: brightness(1) grayscale(0);
+        /* 鼠标放上去：变彩色 + 稍微放大 */
+        .gallery-item:hover .image-box img {
+            filter: grayscale(0%) contrast(1);
+            transform: scale(1.05);
         }
 
-        /* 编号装饰 */
-        .card-num {
-            font-family: var(--font-en-heading);
-            font-size: 3rem;
-            color: #222; /* 极淡的背景字 */
-            position: absolute;
-            top: -20px;
-            right: 0px;
-            z-index: -1;
-            transition: color 0.3s;
-        }
-        .card:hover .card-num { color: #333; }
-
-        .meta-info {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .card-title {
-            font-family: var(--font-cn-heading);
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .card-desc {
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
-            opacity: 0.8;
-        }
-
-        /* 错落布局 (Masonry feel) - 第二个卡片下沉 */
-        .card:nth-child(2) {
-            margin-top: 80px; /* 制造错落感 */
-        }
-
-        /* ====================
-           6. 页脚
-           ==================== */
-        footer {
-            padding: 100px 8vw 50px;
-            border-top: 1px solid #1a1a1a;
+        /* 文字描述 */
+        .item-info {
+            margin-top: 25px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: baseline;
+            border-top: 1px solid var(--line-color);
+            padding-top: 15px;
+            opacity: 0.7;
+            transition: opacity 0.5s;
         }
-        
-        .footer-brand h2 {
-            font-family: var(--font-en-heading);
-            font-size: 2rem;
-            margin-bottom: 10px;
+
+        .gallery-item:hover .item-info {
+            opacity: 1;
+            border-color: #000; /* 线条变黑 */
         }
-        
-        .copyright {
-            color: #444;
-            font-size: 0.8rem;
+
+        .item-title {
+            font-family: var(--font-cn);
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .item-cat {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         /* ====================
-           7. 动画与响应式
+           6. 底部
            ==================== */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        footer {
+            padding: 80px 40px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--line-color);
         }
 
-        @media (max-width: 1024px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-                gap: 80px;
-            }
-            .card:nth-child(2) { margin-top: 0; }
-            .img-wrapper { height: 400px; }
-            h1 .cn-title { font-size: 3rem; letter-spacing: 8px; }
-            .section-header { flex-direction: column; align-items: flex-start; gap: 20px;}
-            nav { padding: 30px; }
-            .nav-links { display: none; }
+        /* 移动端适配 */
+        @media (max-width: 900px) {
+            .gallery-container { grid-template-columns: 1fr; gap: 60px; }
+            .gallery-item:nth-child(2) { margin-top: 0; } /* 取消错落 */
+            .bg-text { display: none; } /* 手机上隐藏大背景字 */
+            .image-box { height: 400px; }
+            nav { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">LIBFORM.</div>
-        <div class="nav-links">
-            <a href="#" class="active">作品 Works</a>
-            <a href="#">理念 Philosophy</a>
-            <a href="#">日志 Journal</a>
-            <a href="#">联系 Contact</a>
-        </div>
+        <div class="logo">Libform.</div>
+        <div class="nav-toggle">Menu</div>
     </nav>
 
     <div class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-content">
-            <span class="year-label">Est. MMXXV</span>
-            <h1>
-                <span class="cn-title">静谧 · 构筑</span>
-                <span class="en-subtitle">The Architecture of Silence</span>
-            </h1>
-        </div>
-
-        <div class="scroll-indicator">
-            <span class="scroll-text">Explore</span>
-            <div class="line"></div>
-        </div>
+        <div class="bg-text">PURE FORM</div>
+        <h1>
+            <span class="main-title">删繁 · 就简</span>
+            <span class="sub-title">Exploring the Essence of Form</span>
+        </h1>
     </div>
 
-    <section class="gallery-section">
-        <div class="section-header">
-            <div class="section-title">
-                <span>Selected Works</span>
-                精选辑录
+    <section class="gallery-container">
+        
+        <div class="gallery-item">
+            <div class="image-box">
+                <img src="https://images.unsplash.com/photo-1595303526913-c7037797be77?q=80&w=2727&auto=format&fit=crop" alt="Artwork 1">
             </div>
-            <a href="#" style="font-size: 0.8rem; color: var(--text-secondary); border-bottom: 1px solid #444; padding-bottom: 5px;">VIEW ALL PROJECTS</a>
+            <div class="item-info">
+                <span class="item-title">秩序之美</span>
+                <span class="item-cat">Architecture</span>
+            </div>
         </div>
 
-        <div class="grid-container">
-            
-            <div class="card">
-                <span class="card-num">01</span>
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2727&auto=format&fit=crop" class="card-img" alt="Project 1">
-                </div>
-                <div class="meta-info">
-                    <h3 class="card-title">光之教堂</h3>
-                    <p class="card-desc">Shadow & Light / 极简主义空间探索</p>
-                </div>
+        <div class="gallery-item">
+            <div class="image-box">
+                <img src="https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=2666&auto=format&fit=crop" alt="Artwork 2">
             </div>
-
-            <div class="card">
-                <span class="card-num">02</span>
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?q=80&w=2784&auto=format&fit=crop" class="card-img" alt="Project 2">
-                </div>
-                <div class="meta-info">
-                    <h3 class="card-title">混凝土叙事</h3>
-                    <p class="card-desc">Brutalist Form / 原始材质的现代重构</p>
-                </div>
+            <div class="item-info">
+                <span class="item-title">静物流动</span>
+                <span class="item-cat">Sculpture</span>
             </div>
-
-            <div class="card">
-                <span class="card-num">03</span>
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1470723710355-171b4cace345?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 3">
-                </div>
-                <div class="meta-info">
-                    <h3 class="card-title">无界居所</h3>
-                    <p class="card-desc">Boundless Living / 自然与居住的边界消融</p>
-                </div>
-            </div>
-
         </div>
+
+        <div class="gallery-item">
+            <div class="image-box">
+                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2700&auto=format&fit=crop" alt="Artwork 3">
+            </div>
+            <div class="item-info">
+                <span class="item-title">自然留白</span>
+                <span class="item-cat">Nature</span>
+            </div>
+        </div>
+
     </section>
 
     <footer>
-        <div class="footer-brand">
-            <h2>LIBFORM.</h2>
-            <p style="color: #666; font-size: 0.8rem; max-width: 300px;">
-                致力于探索极简主义与东方哲学的数字表达。
-            </p>
-        </div>
-        <div class="copyright">
-            &copy; 2025 LIBFORM DESIGN. ALL RIGHTS RESERVED.
-        </div>
+        <p>DESIGNED BY LIBFORM EST.2025</p>
     </footer>
 
 </body>
