@@ -13,245 +13,130 @@
             --transition-curve: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
+            width: 100%; height: 100vh; overflow: hidden;
             font-family: 'Inter', sans-serif;
-            background: #000;
-            color: #fff;
+            background: #000; color: #fff;
         }
 
+        /* 背景层：增加默认深色背景，防止图片挂了全黑 */
         .bg-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+            background: #111; /* 保底色 */
         }
 
         .bg-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; top: 0; left: 0;
             transition: opacity 1s ease-in-out, transform 7s ease;
-            opacity: 0;
-            transform: scale(1.15);
+            opacity: 0; transform: scale(1.15);
         }
 
-        .bg-image.active {
-            opacity: 1;
-            transform: scale(1);
-        }
+        .bg-image.active { opacity: 1; transform: scale(1); }
 
         .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.2) 100%);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.2) 100%);
             z-index: 2;
         }
 
         .main-container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            padding: 0 8vw;
-            align-items: center;
+            position: relative; z-index: 10; width: 100%; height: 100%;
+            display: grid; grid-template-columns: 1.2fr 1fr;
+            padding: 0 8vw; align-items: center;
         }
 
-        .text-content {
-            padding-right: 60px;
-        }
+        .text-content { padding-right: 60px; }
 
         .text-content h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 5rem;
-            line-height: 1;
-            font-weight: 700;
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(30px);
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-family: 'Playfair Display', serif; font-size: 5rem; line-height: 1;
+            font-weight: 700; margin-bottom: 30px; opacity: 0;
+            transform: translateY(30px); text-shadow: 0 10px 30px rgba(0,0,0,0.5);
             letter-spacing: -1px;
         }
 
         .text-content p {
-            font-size: 1.15rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 45px;
-            opacity: 0;
-            transform: translateY(30px);
-            max-width: 85%;
-            font-weight: 300;
-            border-left: 2px solid rgba(255,255,255,0.3);
-            padding-left: 20px;
+            font-size: 1.15rem; line-height: 1.8; color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 45px; opacity: 0; transform: translateY(30px);
+            max-width: 85%; font-weight: 300;
+            border-left: 2px solid rgba(255,255,255,0.3); padding-left: 20px;
         }
 
         .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 16px 45px;
-            border: 1px solid rgba(255,255,255,0.4);
-            border-radius: 50px;
-            color: #fff;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 3px;
+            display: inline-flex; align-items: center; padding: 16px 45px;
+            border: 1px solid rgba(255,255,255,0.4); border-radius: 50px;
+            color: #fff; text-decoration: none; text-transform: uppercase;
+            font-size: 0.8rem; letter-spacing: 3px;
             transition: all 0.4s var(--transition-curve);
-            opacity: 0;
-            transform: translateY(30px);
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
+            opacity: 0; transform: translateY(30px);
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
         }
 
         .cta-btn:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-            padding-right: 55px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            background: #fff; color: #000; border-color: #fff;
+            padding-right: 55px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        .cta-btn i {
-            margin-left: 10px;
-            font-size: 0.8rem;
-            transition: transform 0.3s;
-        }
-        
-        .cta-btn:hover i {
-            transform: translateX(5px);
-        }
+        .cta-btn i { margin-left: 10px; font-size: 0.8rem; transition: transform 0.3s; }
+        .cta-btn:hover i { transform: translateX(5px); }
 
-        @keyframes textReveal {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes textReveal { to { opacity: 1; transform: translateY(0); } }
 
         .slider-nav {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            justify-content: flex-end;
-            height: 400px;
+            display: flex; gap: 15px; align-items: center; justify-content: flex-end; height: 400px;
         }
 
         .nav-card {
-            position: relative;
-            width: 90px;
-            height: 150px;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
+            position: relative; width: 90px; height: 150px; border-radius: 8px;
+            overflow: hidden; cursor: pointer;
             transition: all 0.6s var(--transition-curve);
             filter: brightness(0.6) grayscale(0.6);
             border: 1px solid rgba(255,255,255,0.1);
+            background: #333; /* 图片加载失败时的底色 */
         }
 
         .nav-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
+            width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease;
         }
 
         .nav-card.active {
-            width: 180px;
-            height: 260px;
-            filter: brightness(1) grayscale(0);
+            width: 180px; height: 260px; filter: brightness(1) grayscale(0);
             border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
-            z-index: 5;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); z-index: 5;
         }
 
-        .nav-card:hover img, .nav-card.active img {
-            transform: scale(1.15);
-        }
+        .nav-card:hover img, .nav-card.active img { transform: scale(1.15); }
 
         .nav-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            color: #fff;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: 0.4s 0.1s;
+            color: #fff; opacity: 0; transform: translateY(20px); transition: 0.4s 0.1s;
         }
 
         .nav-info span {
-            display: block;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 5px;
+            display: block; font-size: 0.7rem; letter-spacing: 2px;
+            color: rgba(255,255,255,0.6); margin-bottom: 5px;
         }
 
-        .nav-info h4 {
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
+        .nav-info h4 { font-size: 1rem; font-weight: 500; letter-spacing: 1px; }
 
-        .nav-card.active .nav-info {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .nav-card.active .nav-info { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 900px) {
             .main-container {
-                grid-template-columns: 1fr;
-                grid-template-rows: 1fr auto;
-                padding: 40px 20px;
-                text-align: left;
+                grid-template-columns: 1fr; grid-template-rows: 1fr auto;
+                padding: 40px 20px; text-align: left;
             }
-
-            .text-content {
-                padding-right: 0;
-                padding-top: 80px;
-            }
-
-            .text-content h1 {
-                font-size: 3.5rem;
-            }
-            
-            .text-content p {
-                max-width: 100%;
-            }
-
+            .text-content { padding-right: 0; padding-top: 80px; }
+            .text-content h1 { font-size: 3.5rem; }
+            .text-content p { max-width: 100%; }
             .slider-nav {
-                width: 100%;
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 20px;
-                gap: 10px;
+                width: 100%; justify-content: flex-start; overflow-x: auto;
+                padding-bottom: 20px; gap: 10px;
             }
-            
-            .slider-nav::-webkit-scrollbar {
-                display: none;
-            }
-
-            .nav-card {
-                flex-shrink: 0;
-            }
+            .nav-card { flex-shrink: 0; }
         }
     </style>
 </head>
@@ -263,73 +148,67 @@
     <div class="main-container">
         <div class="text-content">
             <h1 id="title">Hello,<br>I'm Fang.</h1>
-            <p id="desc">这里是我的世界。目前我已拥有呼吸24年的空气呼吸经验。</p>
+            <p id="desc">...</p>
             <a href="#" id="link" class="cta-btn">
-                Contact Me <i class="fas fa-arrow-right"></i>
+                More Info <i class="fas fa-arrow-right"></i>
             </a>
         </div>
 
         <div class="slider-nav">
             <div class="nav-card active" onclick="updateSlider(0)">
-                <img src="https://images.unsplash.com/photo-1542345091-629f268b8b93?q=80&w=2070&auto=format&fit=crop" alt="Route 66">
-                <div class="nav-info">
-                    <span>01</span>
-                    <h4>我是 Fang</h4>
-                </div>
+                <img id="thumb-0" src="" alt="Fang">
+                <div class="nav-info"><span>01</span><h4>我是 Fang</h4></div>
             </div>
             <div class="nav-card" onclick="updateSlider(1)">
-                <img src="https://images.unsplash.com/photo-1531816458010-fb7685eecdad?q=80&w=2070&auto=format&fit=crop" alt="Desert Road">
-                <div class="nav-info">
-                    <span>02</span>
-                    <h4>生活态度</h4>
-                </div>
+                <img id="thumb-1" src="" alt="Freedom">
+                <div class="nav-info"><span>02</span><h4>生活态度</h4></div>
             </div>
             <div class="nav-card" onclick="updateSlider(2)">
-                <img src="https://images.unsplash.com/photo-1473862170180-84427c485aca?q=80&w=2070&auto=format&fit=crop" alt="Freedom">
-                <div class="nav-info">
-                    <span>03</span>
-                    <h4>我的创造</h4>
-                </div>
+                <img id="thumb-2" src="" alt="Notes">
+                <div class="nav-info"><span>03</span><h4>我的创造</h4></div>
             </div>
             <div class="nav-card" onclick="updateSlider(3)">
-                <img src="https://images.unsplash.com/photo-1517456215362-e1c5f3c53b2c?q=80&w=2070&auto=format&fit=crop" alt="California">
-                <div class="nav-info">
-                    <span>04</span>
-                    <h4>联系我</h4>
-                </div>
+                <img id="thumb-3" src="" alt="Contact">
+                <div class="nav-info"><span>04</span><h4>联系我</h4></div>
             </div>
         </div>
     </div>
 
     <script>
+        // --- 修复版：使用了更稳定的图片地址 ---
+        // 如果这些图片在你的网络下依然打不开，强烈建议下载图片到本地使用
         const slides = [
             {
                 title: "Hello,<br>I'm Fang.",
                 desc: "圣洁者堕落，禁欲者高潮，极致的反差令人着迷，极致的性感莫过于此",
-                // 1. 纪念碑谷风格的笔直公路，经典阿甘正传机位
-                img: "https://images.unsplash.com/photo-1542345091-629f268b8b93?q=80&w=2070&auto=format&fit=crop",
-                link: "#about"
+                // 替换为一张经典的黑白公路人像或剪影，更易加载
+                img: "https://images.pexels.com/photos/1689731/pexels-photo-1689731.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                link: "#about",
+                btnText: "About Me"
             },
             {
                 title: "Born<br>Free.",
                 desc: "真心就像内裤，大家都穿在身上，谁也不知道对方有没有穿，但是我戴在头上，你第一眼就可以看到我是真心的",
-                // 2. 荒野中的无限延伸，绝对的自由感
-                img: "https://images.unsplash.com/photo-1531816458010-fb7685eecdad?q=80&w=2070&auto=format&fit=crop",
-                link: "#freedom"
+                // 替换为宽阔的公路图
+                img: "https://images.pexels.com/photos/346885/pexels-photo-346885.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                link: "#freedom",
+                btnText: "Explore"
             },
             {
-                title: "Create<br>& Build.",
-                desc: "每个人都着急说话，每个人都没有把话说完。",
-                // 3. 一个人站在车顶/路边，眺望远方，非常有创造力和故事感
-                img: "https://images.unsplash.com/photo-1473862170180-84427c485aca?q=80&w=2070&auto=format&fit=crop",
-                link: "#work"
+                title: "Create<br>& Notes.",
+                desc: "每个人都着急说话，每个人都没有把话说完。—— 陆奇 USTC 创业分享会笔记",
+                // 替换为更有质感的办公/思考图
+                img: "https://images.pexels.com/photos/210243/pexels-photo-210243.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                link: "https://comydream.github.io/2025/11/25/lu-qi-ustc-talk-25/", 
+                btnText: "Read Note"
             },
             {
                 title: "Let's<br>Talk.",
                 desc: "别犹豫",
-                // 4. 加州洛杉矶的棕榈树大道，黄昏时分，非常适合以此结束（联系我）
-                img: "https://images.unsplash.com/photo-1517456215362-e1c5f3c53b2c?q=80&w=2070&auto=format&fit=crop",
-                link: "mailto:example@email.com" 
+                // 替换为城市夜景或手机
+                img: "https://images.pexels.com/photos/323503/pexels-photo-323503.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                link: "mailto:example@email.com",
+                btnText: "Send Email"
             }
         ];
 
@@ -342,14 +221,24 @@
         let currentIndex = 0;
 
         function init() {
+            // 1. 初始化背景图
             slides.forEach((slide, index) => {
                 const img = document.createElement('img');
                 img.src = slide.img;
                 img.classList.add('bg-image');
                 if(index === 0) img.classList.add('active');
                 img.dataset.index = index;
+                // 增加图片加载错误的监听，如果挂了就显示灰色背景
+                img.onerror = function() { this.style.display = 'none'; }; 
                 bgContainer.appendChild(img);
+                
+                // 2. 初始化小图
+                const thumb = document.getElementById(`thumb-${index}`);
+                if(thumb) thumb.src = slide.img;
             });
+            
+            // 3. 初始化文字
+            updateTextContent(0);
             animateText();
         }
 
@@ -357,6 +246,7 @@
             if (index === currentIndex && index !== 0) return; 
             currentIndex = index;
 
+            // 背景切换
             const bgImages = document.querySelectorAll('.bg-image');
             bgImages.forEach(img => {
                 if(parseInt(img.dataset.index) === index) {
@@ -366,13 +256,13 @@
                 }
             });
 
+            // 文字切换
             resetTextAnimation(() => {
-                titleEl.innerHTML = slides[index].title;
-                descEl.innerText = slides[index].desc;
-                linkEl.href = slides[index].link;
+                updateTextContent(index);
                 animateText();
             });
 
+            // 卡片高亮
             cards.forEach((card, i) => {
                 if (i === index) {
                     card.classList.add('active');
@@ -380,6 +270,14 @@
                     card.classList.remove('active');
                 }
             });
+        }
+
+        function updateTextContent(index) {
+            const currentSlide = slides[index];
+            titleEl.innerHTML = currentSlide.title;
+            descEl.innerText = currentSlide.desc;
+            linkEl.href = currentSlide.link;
+            linkEl.innerHTML = `${currentSlide.btnText} <i class="fas fa-arrow-right"></i>`;
         }
 
         function resetTextAnimation(callback) {
