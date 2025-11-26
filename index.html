@@ -20,10 +20,11 @@
             background: #000; color: #fff;
         }
 
-        /* --- 背景层 --- */
+        /* --- 背景层 (加了 pointer-events: none 防止遮挡点击) --- */
         .bg-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
             background: #0a0a0a; 
+            pointer-events: none; /* 关键：让鼠标点击穿透背景 */
         }
 
         .bg-image {
@@ -39,9 +40,10 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.2) 100%);
             z-index: 2;
+            pointer-events: none; /* 关键：让鼠标点击穿透遮罩 */
         }
 
-        /* --- 主布局 (PC优先，Mobile在下面覆盖) --- */
+        /* --- 主布局 --- */
         .main-container {
             position: relative; z-index: 10; width: 100%; height: 100%;
             display: grid; grid-template-columns: 1.2fr 1fr;
@@ -55,18 +57,22 @@
             pointer-events: none;
         }
 
-        .text-content { padding-right: 60px; }
+        .text-content { padding-right: 60px; pointer-events: auto; }
 
+        /* 默认 opacity 改为 1，防止 JS 挂了导致文字看不见 */
         .text-content h1 {
             font-family: 'Playfair Display', serif; font-size: 5rem; line-height: 1;
-            font-weight: 700; margin-bottom: 30px; opacity: 0;
+            font-weight: 700; margin-bottom: 30px; 
+            opacity: 0; /* 动画控制 */
             transform: translateY(30px); text-shadow: 0 10px 30px rgba(0,0,0,0.5);
             letter-spacing: -1px;
         }
 
         .text-content p {
             font-size: 1.15rem; line-height: 1.8; color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 45px; opacity: 0; transform: translateY(30px);
+            margin-bottom: 45px; 
+            opacity: 0; 
+            transform: translateY(30px);
             max-width: 85%; font-weight: 300;
             border-left: 2px solid rgba(255,255,255,0.3); padding-left: 20px;
         }
@@ -79,7 +85,7 @@
             transition: all 0.4s var(--transition-curve);
             opacity: 0; transform: translateY(30px);
             background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
-            cursor: pointer;
+            cursor: pointer; pointer-events: auto; /* 确保按钮可点 */
         }
 
         .cta-btn:hover {
@@ -95,6 +101,7 @@
         /* --- 导航卡片区 --- */
         .slider-nav {
             display: flex; gap: 15px; align-items: center; justify-content: flex-end; height: 400px;
+            pointer-events: auto;
         }
 
         .nav-card {
@@ -104,7 +111,7 @@
             filter: brightness(0.6) grayscale(0.6);
             border: 1px solid rgba(255,255,255,0.1);
             background: #222;
-            flex-shrink: 0; /* 防止手机端卡片被挤扁 */
+            flex-shrink: 0; 
         }
 
         .nav-card img {
@@ -175,7 +182,7 @@
 
         .lib-content-area {
             flex: 1; overflow-y: auto; padding: 50px; position: relative;
-            scrollbar-width: none; -webkit-overflow-scrolling: touch; /* 手机顺滑滚动 */
+            scrollbar-width: none; -webkit-overflow-scrolling: touch; 
         }
         .lib-content-area::-webkit-scrollbar { display: none; }
 
@@ -241,69 +248,35 @@
             background: rgba(255,255,255,0.05); padding: 25px; border-radius: 8px; margin: 30px 0; border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* =========================================
-           📱 移动端适配核心代码 (Responsive)
-           ========================================= */
+        /* 手机适配 */
         @media (max-width: 900px) {
-            /* 1. 主布局改为上下结构 */
             .main-container {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between; /* 文字靠上，导航靠下 */
+                display: flex; flex-direction: column; justify-content: space-between;
                 padding: 100px 25px 30px 25px;
             }
 
             .text-content {
-                padding-right: 0;
-                width: 100%;
-                text-align: left;
-                margin-bottom: auto; /* 自动顶上去 */
+                padding-right: 0; width: 100%; text-align: left; margin-bottom: auto;
             }
 
-            .text-content h1 {
-                font-size: 3.5rem; /* 字体缩小 */
-                margin-bottom: 20px;
-            }
-            
-            .text-content p {
-                max-width: 100%;
-                font-size: 1rem;
-                margin-bottom: 30px;
-            }
+            .text-content h1 { font-size: 3.5rem; margin-bottom: 20px; }
+            .text-content p { max-width: 100%; font-size: 1rem; margin-bottom: 30px; }
 
-            /* 2. 导航卡片改为横向滚动 */
             .slider-nav {
-                width: 100%;
-                height: auto;
-                justify-content: flex-start; /* 靠左排列 */
-                overflow-x: auto; /* 允许滑动 */
-                padding-bottom: 20px; /* 留出滚动条空间 */
-                gap: 12px;
-                /* 隐藏滚动条 */
-                -ms-overflow-style: none;
-                scrollbar-width: none;
+                width: 100%; height: auto; justify-content: flex-start;
+                overflow-x: auto; padding-bottom: 20px; gap: 12px;
+                -ms-overflow-style: none; scrollbar-width: none;
             }
             .slider-nav::-webkit-scrollbar { display: none; }
 
-            .nav-card {
-                width: 80px; height: 120px; /* 手机上卡片小一点 */
-            }
-            .nav-card.active {
-                width: 110px; height: 170px; /* 激活态也小一点 */
-            }
+            .nav-card { width: 80px; height: 120px; }
+            .nav-card.active { width: 110px; height: 170px; }
 
-            /* 3. 知识库弹窗全屏化 */
-            .library-panel {
-                width: 100%; /* 全宽 */
-                border-left: none;
-            }
-
+            .library-panel { width: 100%; border-left: none; }
             .lib-toolbar { padding: 0 25px; }
             .lib-content-area { padding: 25px; }
             .lib-article-view { padding: 25px; top: 0; left: 0; }
-
             .article-title { font-size: 1.8rem; }
-            .item-title { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -351,108 +324,80 @@
             </div>
 
             <div class="lib-content-area" id="lib-content-area">
-                
                 <div class="lib-list-view">
                     <div class="lib-item-card" onclick="openArticle('article-luqi')">
                         <div class="item-meta">2025.11.25 · Note</div>
                         <div class="item-title">陆奇 USTC 创业分享会笔记</div>
                         <div class="item-desc">每个人都着急说话，每个人都没有把话说完。关于创业、机会与个人的深刻见解。</div>
                     </div>
-                    <div class="lib-item-card" onclick="alert('这是演示条目')">
+                    <div class="lib-item-card" onclick="alert('Demo Item')">
                         <div class="item-meta">2025.10.15 · Thoughts</div>
-                        <div class="item-title">Design Philosophy: Less is More</div>
-                        <div class="item-desc">设计不应该喧宾夺主，而应该像空气一样自然。探讨极简主义在数字产品中的应用。</div>
+                        <div class="item-title">Design Philosophy</div>
+                        <div class="item-desc">Less is more.</div>
                     </div>
                 </div>
-
                 <div class="lib-article-view" id="article-luqi">
                     <div class="back-btn" onclick="backToList()">
                         <i class="fas fa-arrow-left"></i> Back to Library
                     </div>
-
                     <div class="article-body">
                         <div class="article-header">
                             <span class="article-date">2025.11.25 · USTC Share</span>
                             <h1 class="article-title">陆奇 USTC 创业分享会：<br>大模型时代的结构性机会</h1>
                         </div>
-                        
                         <div class="article-content">
-                            <blockquote>
-                                "每个人都着急说话，每个人都没有把话说完。"
-                            </blockquote>
-                            
-                            <p>这是陆奇博士在 USTC 分享会上的开场白。在这次长达两小时的深度分享中，他没有谈论浮躁的风口，而是从历史的维度、物理学的底层逻辑，重新拆解了我们当下面临的时代机遇。以下是我的完整笔记整理。</p>
-
+                            <blockquote>"每个人都着急说话，每个人都没有把话说完。"</blockquote>
+                            <p>这是陆奇博士在 USTC 分享会上的开场白。在这次分享中，他重新拆解了我们当下面临的时代机遇。</p>
                             <h2>一、历史的进程：信息与能源</h2>
-                            <p>陆奇博士首先抛出了一个宏大的框架：人类社会的发展，本质上是<strong>信息（Information）</strong>与<strong>能源（Energy）</strong>系统的不断重构。</p>
-                            <ul>
-                                <li><strong>农业时代：</strong>我们利用光合作用（能源），通过简单的语言和文字（信息）协作。</li>
-                                <li><strong>工业时代：</strong>化石能源带来了爆发式增长，电力成为了通用能源。</li>
-                                <li><strong>数字时代：</strong>计算机和互联网将信息的边际成本降到了接近零。</li>
-                            </ul>
-                            <p>而现在，我们正处于一个全新的拐点：<strong>System 2 的边际成本正在归零</strong>。如果说互联网解决了信息的传输问题，那么大模型（LLM）正在解决信息的“理解”与“生成”问题。这不仅仅是技术的升级，更是生产力范式的转移。</p>
-
-                            <h2>二、关于机会 (Opportunity)</h2>
-                            <p>很多同学问，现在还是创业的好时机吗？陆奇的回答是坚定的：<strong>Yes, but different.</strong></p>
-                            <p>历史上每一次大的技术变革，都会带来结构性的机会。现在的 AI 浪潮，堪比当年的互联网爆发，甚至更剧烈。但机会不等于跟风。</p>
-                            <div class="highlight-box">
-                                <strong>我们要寻找什么机会？</strong><br>
-                                寻找那些由于技术边界扩展而新产生的“未被满足的需求”。不要去做“更好的搜索”，而要去做“搜索解决不了的问题”。
-                            </div>
-
-                            <h2>三、创始人的特质 (Founder)</h2>
-                            <p>在这样的时代，什么样的创始人能赢？陆奇总结了三个核心特质：</p>
+                            <p>人类社会的发展，本质上是<strong>信息</strong>与<strong>能源</strong>系统的重构。现在，我们正处于一个拐点：System 2 的边际成本正在归零。</p>
+                            <h2>二、关于机会</h2>
+                            <p>现在是创业的好时机吗？<strong>Yes, but different.</strong> 现在的 AI 浪潮堪比当年的互联网爆发。我们要寻找由于技术边界扩展而新产生的“未被满足的需求”。</p>
+                            <h2>三、创始人的特质</h2>
                             <h3>1. Vision (愿景)</h3>
-                            <p>能看到别人看不到的未来。这不仅仅是想象力，更是一种对未来的<strong>非共识的正确判断</strong>。你必须相信一些别人暂时不相信，但即使在逻辑上成立的事情。</p>
-
+                            <p>能看到别人看不到的未来。一种非共识的正确判断。</p>
                             <h3>2. Execution (执行)</h3>
-                            <p>将愿景落地的能力。速度是关键。在 AI 时代，技术迭代以周为单位，慢一步就是死。执行力不是瞎忙，而是快速闭环（Feedback Loop）。</p>
-
+                            <p>速度是关键。在 AI 时代，慢一步就是死。</p>
                             <h3>3. Resilience (韧性)</h3>
-                            <p>创业是九死一生的游戏。面对至暗时刻的坚持，是区分优秀者与伟大者的分水岭。陆奇提到：“乐观是创业者的责任。”</p>
-
-                            <h2>四、也就是行动 (Action)</h2>
-                            <p>最后，也是最重要的一点：<strong>Action.</strong></p>
-                            <p>陆奇强调，想得再多不如动手去做。在实践中迭代，在反馈中修正。Early adoption 带来的不仅仅是先发优势，更是认知的护城河。</p>
-                            <p>不要在岸上讨论游泳的姿势。跳下去，感受水的温度，这才是唯一的路径。</p>
-
-                            <br>
-                            <p style="font-style: italic; color: #555; border-top:1px solid #333; padding-top:20px;">
-                                (本文内容整理自 comydream.github.io / Notes by Fang)
-                            </p>
+                            <p>面对至暗时刻的坚持。乐观是创业者的责任。</p>
+                            <div class="highlight-box">
+                                <strong>Action:</strong> 想得再多不如动手去做。不要在岸上讨论游泳的姿势。
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
     <script>
+        // --- 稳定国内图片源 (Bing CN) ---
         const slides = [
             {
                 title: "Hello,<br>I'm Fang.",
                 desc: "圣洁者堕落，禁欲者高潮，极致的反差令人着迷，极致的性感莫过于此",
-                img: "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                // 冰湖 (Bing)
+                img: "https://cn.bing.com/th?id=OHR.ShennongjiaWinter_ZH-CN1367060370_1920x1080.jpg",
                 type: "link", target: "#about", btnText: "About Me"
             },
             {
                 title: "Born<br>Free.",
                 desc: "真心就像内裤，大家都穿在身上，谁也不知道对方有没有穿，但是我戴在头上，你第一眼就可以看到我是真心的",
-                img: "https://images.pexels.com/photos/3363364/pexels-photo-3363364.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                // 树林隧道 (Bing)
+                img: "https://cn.bing.com/th?id=OHR.CypressTunnel_ZH-CN6034107872_1920x1080.jpg",
                 type: "link", target: "#freedom", btnText: "Explore"
             },
             {
                 title: "Create<br>& Notes.",
-                desc: "每个人都着急说话，每个人都没有把话说完。"
-                // 稳定的深色岩石流体图
-                img: "https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2070&auto=format&fit=crop",
+                desc: "每个人都着急说话，每个人都没有把话说完。—— 陆奇 USTC 创业分享会笔记",
+                // 黑沙滩 (Bing) - 完美契合黑色主题
+                img: "https://cn.bing.com/th?id=OHR.BlackSandBeach_ZH-CN9375327244_1920x1080.jpg",
                 type: "library", target: "library", btnText: "Open Library" 
             },
             {
                 title: "Let's<br>Talk.",
                 desc: "别犹豫",
-                img: "https://images.pexels.com/photos/3222415/pexels-photo-3222415.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                // 银河 (Bing)
+                img: "https://cn.bing.com/th?id=OHR.MilkyWayArch_ZH-CN2676004943_1920x1080.jpg",
                 type: "email", target: "mailto:example@email.com", btnText: "Send Email"
             }
         ];
@@ -468,6 +413,9 @@
 
         let currentIndex = 0;
 
+        // 改为 DOMContentLoaded，保证结构加载完就运行，不等图片
+        document.addEventListener('DOMContentLoaded', init);
+
         function init() {
             slides.forEach((slide, index) => {
                 const img = document.createElement('img');
@@ -475,7 +423,6 @@
                 img.classList.add('bg-image');
                 if(index === 0) img.classList.add('active');
                 img.dataset.index = index;
-                img.onerror = function() { this.style.display = 'none'; };
                 bgContainer.appendChild(img);
                 
                 const thumb = document.getElementById(`thumb-${index}`);
@@ -566,8 +513,6 @@
             linkEl.style.animation = 'textReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards';
             linkEl.style.animationDelay = '0.2s';
         }
-
-        window.onload = init;
     </script>
 </body>
 </html>
