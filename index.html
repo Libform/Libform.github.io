@@ -1,29 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Libform的主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libform | 自由与反差</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
+        /* 全局设置 */
+        body, html {
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-family: Arial, sans-serif;
+            padding: 0;
+            height: 100%;
+            font-family: 'Montserrat', Arial, sans-serif;
+            background-color: #1a1a1a; /* 如果图片加载失败显示的底色 */
+            overflow: hidden; /* 防止滚动条 */
         }
-        h1 { font-size: 3em; margin-bottom: 0.5em; }
-        p { font-size: 1.5em; opacity: 0.8; }
-        .container { text-align: center; }
+
+        /* 核心背景区域 */
+        .hero-section {
+            /* 这里是背景图片地址。为了营造氛围，我叠加了一层半透明黑纱，让文字更清晰 */
+            /* 如果您想换图，替换 url('') 里的链接即可 */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            height: 100vh; /* 全屏高度 */
+            background-position: center;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            text-align: center;
+            color: white;
+        }
+
+        /* 导航栏 (参考图顶部的内容) */
+        nav {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 10; /* 保证在最上层 */
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5em;
+            letter-spacing: 2px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* 中间核心文字内容 */
+        .content {
+            z-index: 2;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        /* 副标题：强调反差主题 */
+        .subtitle {
+            font-size: 1.2em;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* 主标题 */
+        h1 {
+            font-size: 4em;
+            margin: 0;
+            line-height: 1.2;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* 分隔线 */
+        .divider {
+            height: 4px;
+            width: 80px;
+            background-color: #e74c3c; /* 采用了参考图里的红色调 */
+            margin: 30px auto;
+        }
+
+        /* 描述文字 */
+        .description {
+            font-size: 1.5em;
+            font-weight: 300;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* 按钮 */
+        .btn {
+            padding: 15px 40px;
+            background-color: #e74c3c; /* 红色按钮 */
+            color: white;
+            text-decoration: none;
+            border-radius: 30px; /* 圆角 */
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #c0392b; /* 鼠标悬停变深色 */
+            transform: translateY(-2px); /* 微微上浮效果 */
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hello, Libform</h1>
-        <p>UI Designer / Developer</p>
-        <p>我的个人网站上线啦 🚀</p>
+
+    <nav>
+        <div class="logo">LIBFORM</div>
+        <div class="nav-links">
+            <a href="#">主页</a>
+            <a href="#">关于反差</a>
+            <a href="#">作品集</a>
+            <a href="#">联系</a>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <div class="content">
+            <p class="subtitle">Explore The Contrast</p>
+            
+            <h1>WHERE FREEDOM<br>MEETS STRUCTURE</h1>
+            
+            <div class="divider"></div>
+            
+            <p class="description">自由与不自由，在反差中寻找平衡。</p>
+            
+            <a href="#" class="btn">开始探索</a>
+        </div>
     </div>
+
 </body>
 </html>
