@@ -3,405 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libform | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Manrope:wght@200;400;600&display=swap" rel="stylesheet">
+    <title>Libform | Personal Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         :root {
-            --accent-gold: #D4AF37; /* 奢侈品金 */
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.15);
-            --ease: cubic-bezier(0.16, 1, 0.3, 1); /* 苹果风格的极致丝滑 */
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-blur: 20px;
+            --active-glow: rgba(255, 255, 255, 0.4);
+            /* 修改：更加丝滑的“轨道”曲线，带有刹车感 */
+            --transition-curve: cubic-bezier(0.25, 1, 0.5, 1); 
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            background: #050505;
-            color: #fff;
-            font-family: 'Manrope', sans-serif;
-            overflow: hidden;
+            width: 100%;
             height: 100vh;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
         }
 
-        /* --- 1. 胶片噪点层 (增加质感) --- */
-        .noise-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        /* --- 2. 背景层 --- */
-        .bg-container {
+        /* --- 背景层 --- */
+        .background-wrapper {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
+            overflow: hidden;
         }
-        
+
         .bg-image {
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             background-size: cover;
             background-position: center;
-            transition: transform 8s var(--ease);
-            filter: brightness(0.6) saturate(0.8); /* 降低饱和度，更显高级 */
+            /* 初始给个灰色背景防止闪烁 */
+            background-color: #111; 
+            transition: transform 10s ease-out, opacity 0.6s ease; 
+            transform: scale(1);
         }
 
-        /* 渐变暗角 */
-        .vignette {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 60% 50%, transparent 0%, #000 90%),
-                        linear-gradient(to right, #000 0%, transparent 50%, #000 100%);
-            z-index: 2;
-        }
-
-        /* --- 3. 巨型背景数字 (装饰性) --- */
-        .giant-number {
+        .overlay {
             position: absolute;
-            top: 50%;
-            left: 5%;
-            transform: translateY(-50%);
-            font-family: 'Cinzel', serif;
-            font-size: 25vw;
-            line-height: 1;
-            color: transparent;
-            -webkit-text-stroke: 2px rgba(255,255,255,0.03); /* 仅描边 */
-            z-index: 2;
-            pointer-events: none;
-            transition: opacity 0.5s;
-        }
-
-        /* --- 4. 布局容器 --- */
-        .layout-grid {
-            position: relative;
-            z-index: 10;
-            display: grid;
-            grid-template-columns: 1fr 400px;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            padding: 0 5vw;
+            /* 调整遮罩让文字更清晰 */
+            background: radial-gradient(circle at 70% 50%, transparent 0%, rgba(0,0,0,0.5) 100%),
+                        linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+            z-index: 2;
         }
 
-        /* 左侧内容 */
-        .text-area {
+        /* --- 主容器 --- */
+        .container {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6vw;
+        }
+
+        /* --- 左侧文字区 --- */
+        .content-wrapper {
+            max-width: 550px;
+            padding-bottom: 5vh;
+        }
+
+        .content-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 5vw, 5.5rem);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 600;
+            font-style: italic;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .content-text p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 300;
+            max-width: 90%;
+            opacity: 0;
+            transform: translateY(30px);
+            border-left: 3px solid rgba(255,255,255,0.3);
+            padding-left: 20px;
+        }
+
+        .btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: all 0.4s var(--transition-curve);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: #fff;
+            transition: width 0.4s var(--transition-curve);
+            z-index: -1;
+        }
+
+        .btn:hover {
+            color: #000;
+            border-color: #fff;
             padding-right: 50px;
         }
 
-        /* 装饰性短横线 */
-        .deco-line {
-            width: 60px;
-            height: 1px;
-            background: var(--accent-gold);
-            margin-bottom: 30px;
-            transform-origin: left;
-            transform: scaleX(0); /* 动画初始 */
+        .btn:hover::before {
+            width: 100%;
         }
 
-        .main-title {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(3rem, 5vw, 6rem);
-            line-height: 1.1;
-            margin-bottom: 2rem;
-            font-weight: 400;
-        }
-        
-        /* 标题中的高亮词 */
-        .main-title span {
-            display: block;
-            font-style: italic;
-            font-weight: 600;
-            background: linear-gradient(45deg, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* 动画类 */
+        .animate-in h1 { animation: slideUp 0.8s var(--transition-curve) forwards 0.1s; }
+        .animate-in p  { animation: slideUp 0.8s var(--transition-curve) forwards 0.2s; }
+        .animate-in .btn { animation: slideUp 0.8s var(--transition-curve) forwards 0.3s; }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .description {
-            font-size: 1rem;
-            color: rgba(255,255,255,0.7);
-            line-height: 1.8;
-            max-width: 450px;
-            margin-bottom: 40px;
-            font-weight: 200;
-        }
-
-        /* 高级按钮 */
-        .luxury-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            color: #fff;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            width: fit-content;
-            transition: 0.4s;
-            position: relative;
-        }
-
-        .luxury-btn::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; left: 0; width: 0; height: 1px;
-            background: #fff;
-            transition: 0.4s var(--ease);
-        }
-
-        .luxury-btn:hover { color: #fff; border-color: transparent; }
-        .luxury-btn:hover::after { width: 100%; }
-
-        /* --- 动画类 --- */
-        .animate-reveal .deco-line { animation: lineGrow 0.8s var(--ease) forwards; }
-        .animate-reveal .main-title { animation: fadeUp 1s var(--ease) 0.2s forwards; opacity: 0; transform: translateY(30px); }
-        .animate-reveal .description { animation: fadeUp 1s var(--ease) 0.3s forwards; opacity: 0; transform: translateY(30px); }
-        .animate-reveal .luxury-btn { animation: fadeUp 1s var(--ease) 0.4s forwards; opacity: 0; transform: translateY(30px); }
-
-        @keyframes lineGrow { to { transform: scaleX(1); } }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
-        /* --- 5. 右侧卡片区 (胶片轴) --- */
-        .gallery-area {
+        /* --- 右侧导航区 (重点修改区域) --- */
+        .slider-navigation {
             display: flex;
+            gap: 15px; /* 减小间距，增加连贯感 */
             align-items: center;
-            /* 这种负边距布局可以让卡片超出屏幕一点点，更有空间感 */
-            transform: translateX(20px); 
+            height: 400px; /* 给定高度以便对齐 */
         }
 
-        .cards-wrapper {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .film-card {
-            width: 70px;
-            height: 100px;
+        .nav-card {
+            /* 默认宽度 */
+            width: 80px; 
+            height: 120px;
+            border-radius: 16px;
             position: relative;
-            border-radius: 4px;
             cursor: pointer;
             overflow: hidden;
-            transition: all 0.6s var(--ease);
-            opacity: 0.5;
-            /* 玻璃态边框 */
+            /* 核心：这里控制卡片宽度变化的动画 */
+            transition: width 0.6s var(--transition-curve),
+                        height 0.6s var(--transition-curve),
+                        filter 0.4s ease;
+            
             border: 1px solid rgba(255,255,255,0.1);
+            filter: grayscale(100%) brightness(0.7);
         }
 
-        .film-card img {
-            width: 100%; height: 100%;
+        /* 图片样式调整 - 实现“轨道滑动”的关键 */
+        .nav-card img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            transition: transform 0.6s;
+            
+            /* 关键点：图片默认稍微放大，并且向左偏移 */
+            /* 这样当卡片变宽时，我们让图片向右复位，产生视差 */
+            transform: scale(1.2) translateX(-20%);
+            transition: transform 0.8s var(--transition-curve);
         }
 
-        /* 悬停微动 */
-        .film-card:not(.active):hover {
-            transform: translateY(-5px);
-            opacity: 0.8;
-            border-color: rgba(255,255,255,0.4);
+        /* 选中状态 */
+        .nav-card.active {
+            width: 240px; /* 变宽 */
+            height: 340px; /* 变高 */
+            filter: grayscale(0%) brightness(1);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            z-index: 10;
         }
 
-        /* 激活态 (重点) */
-        .film-card.active {
-            width: 260px;
-            height: 380px;
-            opacity: 1;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8); /* 极深的阴影 */
-            border: 1px solid rgba(255,255,255,0.2);
+        /* 选中状态下的图片动画 */
+        .nav-card.active img {
+            /* 图片复位，制造出“滑进视野”的感觉 */
+            transform: scale(1.1) translateX(0%);
         }
 
-        /* 流光效果伪元素 */
-        .film-card.active::before {
-            content: '';
+        /* 悬停状态 (非选中) */
+        .nav-card:not(.active):hover {
+            height: 130px; /* 微微变高提示可点击 */
+            filter: grayscale(0%) brightness(0.9);
+        }
+
+        .card-content {
             position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
-            transform: skewX(-25deg);
-            animation: shimmer 3s infinite;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            20% { left: 200%; } /* 快速划过 */
-            100% { left: 200%; } /* 剩余时间等待 */
-        }
-
-        /* 卡片文字 */
-        .card-meta {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            padding: 30px;
-            background: linear-gradient(to top, #000, transparent);
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
             opacity: 0;
-            transform: translateY(10px);
-            transition: 0.4s 0.2s;
+            transform: translateY(20px);
+            transition: 0.4s 0.3s; /* 延迟更久一点，等卡片展开 */
+        }
+
+        .nav-card.active .card-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-num {
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.1);
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            line-height: 1;
+            transition: opacity 0.3s;
         }
         
-        .film-card.active .card-meta {
-            opacity: 1; transform: translateY(0);
+        /* 选中时数字变淡，以免干扰 */
+        .nav-card.active .card-num {
+            opacity: 0.05;
         }
 
-        .meta-num { font-size: 0.8rem; color: var(--accent-gold); letter-spacing: 2px; display: block; margin-bottom: 5px;}
-        .meta-title { font-family: 'Cinzel', serif; font-size: 1.4rem; }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: block;
+            white-space: nowrap; /* 防止换行 */
+        }
+        
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+            display: block;
+        }
 
-        /* --- 手机适配 --- */
-        @media (max-width: 900px) {
-            .layout-grid { grid-template-columns: 1fr; padding-top: 100px; }
-            .giant-number { font-size: 50vw; top: 15%; opacity: 0.1; }
-            .gallery-area {
-                position: absolute; bottom: 0; left: 0; width: 100%;
-                padding: 20px; overflow-x: auto;
-                transform: none;
+        /* --- 手机端适配 --- */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                justify-content: flex-end;
+                padding: 30px;
             }
-            .film-card.active { width: 160px; height: 240px; }
-            .main-title { font-size: 3rem; }
-            .deco-line { display: none; }
+            .content-wrapper {
+                margin-bottom: 20px;
+                padding-bottom: 0;
+                width: 100%;
+            }
+            .content-text h1 {
+                font-size: 2.5rem;
+            }
+            .slider-navigation {
+                width: 100%;
+                height: 200px;
+                overflow-x: auto;
+                padding: 10px 0;
+                justify-content: flex-start;
+                align-items: flex-end;
+                gap: 10px;
+            }
+            .nav-card.active {
+                width: 160px;
+                height: 220px;
+                flex-shrink: 0;
+            }
+            .nav-card {
+                flex-shrink: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="noise-overlay"></div>
 
-    <div class="bg-container">
-        <div class="vignette"></div>
+    <div class="background-wrapper">
+        <div class="overlay"></div>
         <div class="bg-image" id="bg-img"></div>
     </div>
 
-    <div class="giant-number" id="bg-num">01</div>
-
-    <div class="layout-grid">
-        <div class="text-area" id="text-wrapper">
-            <div class="deco-line"></div>
-            <h1 class="main-title" id="title">
-                Personal<br><span>Interface</span>
-            </h1>
-            <p class="description" id="desc">
-                探索极简主义与交互美学的平衡。我是 Libform，在这里展示我的设计哲学与代码构建的数字世界。
-            </p>
-            <a href="#" class="luxury-btn" id="btn">
-                Discover Works <i class="fas fa-arrow-right" style="font-size: 0.6rem;"></i>
-            </a>
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content-text" id="text-container">
+                <h1 id="main-title">Personal<br>Interface</h1>
+                <p id="main-desc">探索设计与代码的边界。这里是 Libform 的个人空间，专注于创造具有情感连接的数字体验。</p>
+                <a href="#" class="btn" id="learn-more-btn">
+                    Explore More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
 
-        <div class="gallery-area">
-            <div class="cards-wrapper">
-                <div class="film-card active" onclick="switchSlide(0)">
-                    <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop">
-                    <div class="card-meta">
-                        <span class="meta-num">No.01</span>
-                        <span class="meta-title">Profile</span>
-                    </div>
+        <div class="slider-navigation">
+            <div class="nav-card" onclick="changeSlide(0)">
+                <span class="card-num">01</span>
+                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop" alt="Profile">
+                <div class="card-content">
+                    <span class="card-title">关于我</span>
+                    <span class="card-subtitle">Designer & Dev</span>
                 </div>
-                <div class="film-card" onclick="switchSlide(1)">
-                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop">
-                    <div class="card-meta">
-                        <span class="meta-num">No.02</span>
-                        <span class="meta-title">Experience</span>
-                    </div>
+            </div>
+            
+            <div class="nav-card" onclick="changeSlide(1)">
+                <span class="card-num">02</span>
+                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop" alt="Experience">
+                <div class="card-content">
+                    <span class="card-title">我的经历</span>
+                    <span class="card-subtitle">Journey so far</span>
                 </div>
-                <div class="film-card" onclick="switchSlide(2)">
-                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop">
-                    <div class="card-meta">
-                        <span class="meta-num">No.03</span>
-                        <span class="meta-title">Projects</span>
-                    </div>
+            </div>
+
+            <div class="nav-card" onclick="changeSlide(2)">
+                <span class="card-num">03</span>
+                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop" alt="Projects">
+                <div class="card-content">
+                    <span class="card-title">项目作品</span>
+                    <span class="card-subtitle">Selected Works</span>
                 </div>
-                <div class="film-card" onclick="switchSlide(3)">
-                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop">
-                    <div class="card-meta">
-                        <span class="meta-num">No.04</span>
-                        <span class="meta-title">Contact</span>
-                    </div>
+            </div>
+
+            <div class="nav-card" onclick="changeSlide(3)">
+                <span class="card-num">04</span>
+                <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop" alt="Contact">
+                <div class="card-content">
+                    <span class="card-title">联系我</span>
+                    <span class="card-subtitle">Get in Touch</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const data = [
+        // 数据源
+        const slides = [
             {
-                num: "01",
-                title: "Personal<br><span>Interface</span>",
-                desc: "在数字混沌中寻找秩序。我的个人名片不仅仅是信息的堆砌，更是设计思维的视觉化表达。",
-                img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop"
+                title: "Personal<br>Interface",
+                desc: "你好，我是 Libform。这是一张关于我的个人名片。我专注于 UI 设计与全栈开发，致力于创造令人惊叹的数字体验。",
+                img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop", 
+                link: "#"
             },
             {
-                num: "02",
-                title: "Professional<br><span>Journey</span>",
-                desc: "从初创团队的核心开发到设计主管，每一步都留下了坚实的足迹。查看我如何协助企业实现从 0 到 1 的突破。",
-                img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop"
+                title: "My<br>Experience",
+                desc: "在过去的几年里，我参与了多个关键项目的设计与落地。从初创公司的 0 到 1，到成熟产品的迭代更新，我积累了丰富的实战经验。",
+                img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop",
+                link: "#"
             },
             {
-                num: "03",
-                title: "Selected<br><span>Works</span>",
-                desc: "MOE PLANET 及其它项目展示。在这里，代码服务于情感，每一个像素都经过精细打磨。",
-                img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop"
+                title: "Selected<br>Projects",
+                desc: "MOE PLANET 是我最近的得意之作，探索宠物与科技的边界。点击此处查看更多设计细节与代码实现。",
+                img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop",
+                link: "#"
             },
             {
-                num: "04",
-                title: "Get In<br><span>Touch</span>",
-                desc: "思维的碰撞往往产生最耀眼的火花。期待与你探讨新的机遇与灵感。",
-                img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop"
+                title: "Get In<br>Touch",
+                desc: "无论是工作机会还是灵感交流，我都非常期待与你联系。发送邮件或访问我的 GitHub 主页。",
+                img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop",
+                link: "mailto:example@email.com"
             }
         ];
 
         const bgImg = document.getElementById('bg-img');
-        const bgNum = document.getElementById('bg-num');
-        const titleEl = document.getElementById('title');
-        const descEl = document.getElementById('desc');
-        const textWrapper = document.getElementById('text-wrapper');
-        const cards = document.querySelectorAll('.film-card');
+        const mainTitle = document.getElementById('main-title');
+        const mainDesc = document.getElementById('main-desc');
+        const learnMoreBtn = document.getElementById('learn-more-btn');
+        const textContainer = document.getElementById('text-container');
+        const cards = document.querySelectorAll('.nav-card');
 
-        function switchSlide(index) {
-            const content = data[index];
+        let currentIndex = -1; // 用于追踪当前索引，避免重复点击动画
+
+        function changeSlide(index) {
+            // 如果点击的是当前已经激活的，则不执行任何操作（防止动画重置）
+            if (currentIndex === index) return;
+            currentIndex = index;
+
+            const data = slides[index];
+
+            // 1. 背景处理
+            bgImg.style.opacity = '0.5'; 
             
-            // 1. 卡片激活状态
-            cards.forEach((card, i) => {
-                if(i === index) card.classList.add('active');
-                else card.classList.remove('active');
-            });
-
-            // 2. 背景切换 (淡入淡出 + Ken Burns 重置)
-            bgImg.style.opacity = 0;
             setTimeout(() => {
-                bgImg.style.backgroundImage = `url(${content.img})`;
-                bgImg.style.opacity = 1;
-                // 重置缩放
+                bgImg.style.backgroundImage = `url('${data.img}')`;
+                bgImg.style.opacity = '1';
                 bgImg.style.transition = 'none';
                 bgImg.style.transform = 'scale(1)';
-                void bgImg.offsetWidth; // 强行重绘
-                bgImg.style.transition = 'transform 8s cubic-bezier(0.16, 1, 0.3, 1)';
+                void bgImg.offsetWidth; // 强制重绘
+                bgImg.style.transition = 'transform 10s ease-out, opacity 0.6s ease';
                 bgImg.style.transform = 'scale(1.1)';
-            }, 500);
-
-            // 3. 巨型数字切换
-            bgNum.style.opacity = 0;
-            setTimeout(() => {
-                bgNum.innerText = content.num;
-                bgNum.style.opacity = 1;
-            }, 400);
-
-            // 4. 文字动画重播
-            textWrapper.classList.remove('animate-reveal');
-            setTimeout(() => {
-                titleEl.innerHTML = content.title;
-                descEl.innerText = content.desc;
-                textWrapper.classList.add('animate-reveal');
             }, 300);
+
+            // 2. 文字动画
+            textContainer.classList.remove('animate-in');
+            
+            setTimeout(() => {
+                mainTitle.innerHTML = data.title;
+                mainDesc.innerText = data.desc;
+                learnMoreBtn.href = data.link;
+                textContainer.classList.add('animate-in');
+            }, 300);
+
+            // 3. 卡片状态更新 (移除了HTML里的onclick中的active类，完全交由JS控制)
+            cards.forEach((card, i) => {
+                if (i === index) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
         }
 
-        // 初始化
+        // 初始化：解决“黑屏”问题
         window.onload = () => {
-            textWrapper.classList.add('animate-reveal');
-            setTimeout(() => { bgImg.style.transform = 'scale(1.1)'; }, 100);
-        }
+            // 立即加载第一张图的数据
+            changeSlide(0);
+        };
+
     </script>
 </body>
 </html>
