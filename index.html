@@ -3,247 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人主页</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>Libform | Personal Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* --- CSS 样式部分 --- */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-blur: 20px;
+            --active-glow: rgba(255, 255, 255, 0.4);
+            --transition-curve: cubic-bezier(0.22, 1, 0.36, 1); /* 丝滑的贝塞尔曲线 */
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
             width: 100%;
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            align-items: center;
+            font-family: 'Inter', sans-serif;
             background: #000;
+            color: #fff;
         }
 
-        /* 全屏背景层 */
-        .background-layer {
+        /* --- 背景层 (带缩放动画) --- */
+        .background-wrapper {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-size: cover;
-            background-position: center;
-            transition: background-image 0.5s ease-in-out;
             z-index: 1;
-            /* 黑色遮罩，稍微加深一点，让大卡片更突出 */
-            filter: brightness(0.5); 
+            overflow: hidden;
         }
 
-        /* 内容容器 */
+        .bg-image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 10s ease-out, opacity 0.6s ease; 
+            /* 这里的 transform 交给 JS 控制重置，实现 Ken Burns 效果 */
+            transform: scale(1);
+        }
+
+        /* 渐变遮罩：左侧更黑以突出文字，底部更黑以突出卡片 */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 50%, transparent 0%, rgba(0,0,0,0.6) 100%),
+                        linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            z-index: 2;
+        }
+
+        /* --- 主容器 --- */
         .container {
             position: relative;
-            z-index: 2;
+            z-index: 3;
             width: 100%;
             height: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            /* 调整右侧内边距，给大卡片留位置 */
-            padding: 0 5% 0 8%; 
+            padding: 0 6vw;
         }
 
-        /* 左侧文字区 */
+        /* --- 左侧文字区 --- */
         .content-wrapper {
             max-width: 550px;
-            color: #fff;
-            opacity: 0; /* 初始隐藏，由JS控制显示 */
-            transform: translateY(20px);
+            padding-bottom: 5vh;
         }
 
         .content-text h1 {
-            font-size: 4.5rem; /* 稍微加大标题 */
-            line-height: 1;
-            margin-bottom: 25px;
-            font-weight: 700;
-            text-shadow: 2px 2px 15px rgba(0,0,0,0.7);
+            font-family: 'Playfair Display', serif; /* 用衬线体增加高级感 */
+            font-size: clamp(3rem, 5vw, 5.5rem); /* 响应式字体 */
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 600;
+            font-style: italic;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0; /* 动画初始状态 */
+            transform: translateY(30px);
         }
 
         .content-text p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 35px;
-            opacity: 0.9;
-            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 300;
+            max-width: 90%;
+            opacity: 0;
+            transform: translateY(30px);
+            border-left: 3px solid rgba(255,255,255,0.3);
+            padding-left: 20px;
         }
 
+        /* 按钮样式 */
         .btn {
-            display: inline-block;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             padding: 14px 40px;
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--glass-border);
             color: #fff;
             text-decoration: none;
-            border-radius: 2px; /* 按钮也改成微方角，呼应卡片 */
-            font-weight: 500;
-            transition: 0.3s;
+            border-radius: 50px;
+            font-weight: 400;
             letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: all 0.4s var(--transition-curve);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: #fff;
+            transition: width 0.4s var(--transition-curve);
+            z-index: -1;
         }
 
         .btn:hover {
-            background: #fff;
             color: #000;
+            border-color: #fff;
+            padding-right: 50px; /* hover 时变长一点 */
         }
 
-        /* 右侧导航区 (卡片列表) */
+        .btn:hover::before {
+            width: 100%;
+        }
+
+        .btn i {
+            font-size: 0.8rem;
+        }
+
+        /* --- 动画类 (由 JS 触发) --- */
+        .animate-in h1 { animation: slideUp 0.8s var(--transition-curve) forwards 0.1s; }
+        .animate-in p  { animation: slideUp 0.8s var(--transition-curve) forwards 0.2s; }
+        .animate-in .btn { animation: slideUp 0.8s var(--transition-curve) forwards 0.3s; }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 右侧导航区 (卡片) --- */
         .slider-navigation {
             display: flex;
-            gap: 10px; /* 卡片间距变小，更紧凑 */
-            align-items: flex-end;
-            margin-bottom: 40px;
+            gap: 20px;
+            align-items: center; /* 垂直居中对齐 */
         }
 
         .nav-card {
-            /* --- 核心修改：卡片变大，去特效 --- */
-            width: 180px;  /* 宽度加大 */
-            height: 260px; /* 高度加大 */
-            border-radius: 0; /* 去掉圆角，变成锋利的切片 */
-            border: none;     /* 去掉边框 */
-            box-shadow: none; /* 去掉阴影 */
-            
-            overflow: hidden;
+            width: 80px;
+            height: 120px;
+            border-radius: 16px;
             position: relative;
             cursor: pointer;
-            
-            /* 默认状态半透明，融入背景 */
-            opacity: 0.4; 
-            /* 只保留透明度过渡动画 */
-            transition: opacity 0.4s ease; 
-        }
-
-        /* 选中状态的卡片样式 */
-        .nav-card.active {
-            /* 选中时完全不透明，高亮显示，且没有位置和大小变化 */
-            opacity: 1;
-        }
-        
-        /* 鼠标悬停在未选中的卡片上时，稍微亮一点 */
-        .nav-card:hover {
-            opacity: 0.7;
-        }
-        .nav-card.active:hover {
-            opacity: 1;
+            overflow: hidden;
+            transition: all 0.5s var(--transition-curve);
+            border: 1px solid transparent;
+            /* 默认状态有一层黑色遮罩 */
+            filter: grayscale(100%) brightness(0.7);
         }
 
         .nav-card img {
             width: 100%;
             height: 100%;
-            /* 确保图片填满且裁剪，不变形 */
-            object-fit: cover; 
-            /* 移除了 transform 的过渡 */
+            object-fit: cover;
         }
-        
-        /* 移除了鼠标悬停图片放大的效果 */
-        /* .nav-card:hover img { transform: scale(1.1); } */
 
-        /* 卡片上的文字标签 - 样式微调 */
-        .card-info {
+        /* 选中状态 */
+        .nav-card.active {
+            width: 220px; /* 变宽 */
+            height: 320px; /* 变高 */
+            filter: grayscale(0%) brightness(1);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        /* 悬停状态 (非选中) */
+        .nav-card:not(.active):hover {
+            transform: translateY(-5px);
+            filter: grayscale(0%) brightness(0.9);
+        }
+
+        /* 卡片内部信息 */
+        .card-content {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 15px 0;
-            text-align: center;
-            /* 渐变背景加深，让文字更清楚 */
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            color: rgba(255,255,255,0.9);
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            text-transform: uppercase; /* 大写看起来更高级 */
-            /* 默认一直显示，不再隐藏 */
-            opacity: 1;
+            padding: 20px;
+            background: linear-gradient(to top, #000 0%, transparent 100%);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.4s 0.2s; /* 延迟显示 */
         }
 
-        /* 手机端适配优化 */
+        .nav-card.active .card-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-num {
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.1);
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            line-height: 1;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: block;
+        }
+        
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* --- 手机端适配 --- */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
-                justify-content: center;
-                padding: 60px 20px;
+                justify-content: flex-end;
+                padding: 30px;
             }
-            
             .content-wrapper {
-                text-align: left;
-                margin-bottom: 40px;
-                padding-top: 0;
+                margin-bottom: 20px;
+                padding-bottom: 0;
+                width: 100%;
             }
-
             .content-text h1 {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
-
             .slider-navigation {
                 width: 100%;
-                /* 允许手机端横向滚动查看大卡片 */
-                overflow-x: auto; 
-                padding-bottom: 20px;
+                height: 200px;
+                overflow-x: auto;
+                padding: 10px 0;
                 justify-content: flex-start;
-                /* 隐藏滚动条 */
-                -ms-overflow-style: none;  /* IE and Edge */
-                scrollbar-width: none;  /* Firefox */
+                align-items: flex-end;
             }
-            .slider-navigation::-webkit-scrollbar {
-                display: none; /* Chrome, Safari, Opera */
-            }
-
-            /* 手机上卡片稍微缩小一点点，不然太大了 */
-            .nav-card {
+            .nav-card.active {
                 width: 140px;
                 height: 200px;
-                flex-shrink: 0; /* 防止卡片被挤压 */
+                flex-shrink: 0;
+            }
+            .nav-card {
+                flex-shrink: 0;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="background-layer" id="bg-layer"></div>
+    <div class="background-wrapper">
+        <div class="overlay"></div>
+        <div class="bg-image" id="bg-img"></div>
+    </div>
 
     <div class="container">
         <div class="content-wrapper">
-            <div class="content-text">
+            <div class="content-text" id="text-container">
                 <h1 id="main-title">Personal<br>Interface</h1>
-                <p id="main-desc">这里是我的个人主页。点击右下角的图片，可以切换不同的展示内容。</p>
-                <a href="#" class="btn" id="learn-more-btn">EXPLORE</a>
+                <p id="main-desc">探索设计与代码的边界。这里是 Libform 的个人空间，专注于创造具有情感连接的数字体验。</p>
+                <a href="#" class="btn" id="learn-more-btn">
+                    Explore More <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
         </div>
 
         <div class="slider-navigation">
             <div class="nav-card active" onclick="changeSlide(0)">
+                <span class="card-num">01</span>
                 <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop" alt="Profile">
-                <div class="card-info">About Me</div>
+                <div class="card-content">
+                    <span class="card-title">关于我</span>
+                    <span class="card-subtitle">Designer & Dev</span>
+                </div>
             </div>
             
             <div class="nav-card" onclick="changeSlide(1)">
+                <span class="card-num">02</span>
                 <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop" alt="Experience">
-                <div class="card-info">Experience</div>
+                <div class="card-content">
+                    <span class="card-title">我的经历</span>
+                    <span class="card-subtitle">Journey so far</span>
+                </div>
             </div>
 
             <div class="nav-card" onclick="changeSlide(2)">
+                <span class="card-num">03</span>
                 <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop" alt="Projects">
-                <div class="card-info">Projects</div>
+                <div class="card-content">
+                    <span class="card-title">项目作品</span>
+                    <span class="card-subtitle">Selected Works</span>
+                </div>
             </div>
 
             <div class="nav-card" onclick="changeSlide(3)">
+                <span class="card-num">04</span>
                 <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop" alt="Contact">
-                <div class="card-info">Contact</div>
+                <div class="card-content">
+                    <span class="card-title">联系我</span>
+                    <span class="card-subtitle">Get in Touch</span>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- JavaScript 逻辑部分 (保持不变) --- */
-        
+        // 数据源
         const slides = [
             {
                 title: "Personal<br>Interface",
@@ -271,35 +368,49 @@
             }
         ];
 
-        const bgLayer = document.getElementById('bg-layer');
+        const bgImg = document.getElementById('bg-img');
         const mainTitle = document.getElementById('main-title');
         const mainDesc = document.getElementById('main-desc');
         const learnMoreBtn = document.getElementById('learn-more-btn');
+        const textContainer = document.getElementById('text-container');
         const cards = document.querySelectorAll('.nav-card');
-
-        function init() {
-            changeSlide(0);
-        }
 
         function changeSlide(index) {
             const data = slides[index];
-            bgLayer.style.backgroundImage = `url('${data.img}')`;
 
-            const textContent = document.querySelector('.content-text');
-            textContent.style.opacity = '0';
-            textContent.style.transform = 'translateY(30px)'; // 增加一点位移感
-            textContent.style.transition = 'none';
+            // 1. 背景处理：先淡出旧图，再换新图，再 Ken Burns 放大
+            // 这里我们用简单的替换 + 重置 transform 来模拟
+            bgImg.style.opacity = '0.5'; // 切换瞬间稍微变暗
+            
+            setTimeout(() => {
+                bgImg.style.backgroundImage = `url('${data.img}')`;
+                bgImg.style.opacity = '1';
+                
+                // 重置缩放动画：先移除，强行重绘，再添加
+                bgImg.style.transition = 'none';
+                bgImg.style.transform = 'scale(1)';
+                
+                // 强制浏览器重绘 (Reflow)
+                void bgImg.offsetWidth; 
 
+                // 重新开启长动画
+                bgImg.style.transition = 'transform 10s ease-out, opacity 0.6s ease';
+                bgImg.style.transform = 'scale(1.1)'; // 慢慢放大
+            }, 300);
+
+            // 2. 文字动画：移除动画类 -> 更新内容 -> 添加动画类
+            textContainer.classList.remove('animate-in');
+            
             setTimeout(() => {
                 mainTitle.innerHTML = data.title;
                 mainDesc.innerText = data.desc;
                 learnMoreBtn.href = data.link;
+                
+                // 重新触发文字入场动画
+                textContainer.classList.add('animate-in');
+            }, 300);
 
-                textContent.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // 使用更平滑的缓动曲线
-                textContent.style.opacity = '1';
-                textContent.style.transform = 'translateY(0)';
-            }, 200);
-
+            // 3. 卡片状态更新
             cards.forEach((card, i) => {
                 if (i === index) {
                     card.classList.add('active');
@@ -309,7 +420,15 @@
             });
         }
 
-        window.onload = init;
+        // 初始化
+        window.onload = () => {
+            textContainer.classList.add('animate-in'); // 首次加载触发动画
+            // 启动背景缓慢缩放
+            setTimeout(() => {
+                bgImg.style.transform = 'scale(1.1)';
+            }, 100);
+        };
+
     </script>
 </body>
 </html>
