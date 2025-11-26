@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libform | Personal Interface</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <title>Personal Portfolio | Cinematic View</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.05);
+            --primary-color: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-blur: 20px;
-            --active-glow: rgba(255, 255, 255, 0.4);
-            /* 修改：更加丝滑的“轨道”曲线，带有刹车感 */
-            --transition-curve: cubic-bezier(0.25, 1, 0.5, 1); 
+            --transition-curve: cubic-bezier(0.22, 1, 0.36, 1); /* 苹果风格的丝滑曲线 */
         }
 
         * {
@@ -32,403 +30,359 @@
             color: #fff;
         }
 
-        /* --- 背景层 --- */
-        .background-wrapper {
+        /* --- 1. 背景层与遮罩 --- */
+        .bg-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
-            overflow: hidden;
         }
 
         .bg-image {
             width: 100%;
             height: 100%;
-            background-size: cover;
-            background-position: center;
-            /* 初始给个灰色背景防止闪烁 */
-            background-color: #111; 
-            transition: transform 10s ease-out, opacity 0.6s ease; 
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.8s ease-in-out, transform 6s ease; /* 背景缓慢缩放效果 */
+            opacity: 0;
+            transform: scale(1.1);
+        }
+
+        .bg-image.active {
+            opacity: 1;
             transform: scale(1);
         }
 
+        /* 电影感遮罩：确保文字在任何图片上都清晰 */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* 调整遮罩让文字更清晰 */
-            background: radial-gradient(circle at 70% 50%, transparent 0%, rgba(0,0,0,0.5) 100%),
-                        linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+            background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%);
             z-index: 2;
         }
 
-        /* --- 主容器 --- */
-        .container {
+        /* --- 2. 主布局 --- */
+        .main-container {
             position: relative;
-            z-index: 3;
+            z-index: 10;
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 左右分栏 */
+            padding: 0 8vw;
             align-items: center;
-            padding: 0 6vw;
         }
 
-        /* --- 左侧文字区 --- */
-        .content-wrapper {
-            max-width: 550px;
-            padding-bottom: 5vh;
-        }
-
-        .content-text h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(3rem, 5vw, 5.5rem);
-            line-height: 1.1;
-            margin-bottom: 24px;
-            font-weight: 600;
-            font-style: italic;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .content-text p {
-            font-size: 1rem;
-            line-height: 1.8;
-            margin-bottom: 40px;
-            color: rgba(255, 255, 255, 0.85);
-            font-weight: 300;
-            max-width: 90%;
-            opacity: 0;
-            transform: translateY(30px);
-            border-left: 3px solid rgba(255,255,255,0.3);
-            padding-left: 20px;
-        }
-
-        .btn {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 40px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 400;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            transition: all 0.4s var(--transition-curve);
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 100%;
-            background: #fff;
-            transition: width 0.4s var(--transition-curve);
-            z-index: -1;
-        }
-
-        .btn:hover {
-            color: #000;
-            border-color: #fff;
+        /* --- 左侧内容区 --- */
+        .text-content {
+            max-width: 600px;
             padding-right: 50px;
         }
 
-        .btn:hover::before {
-            width: 100%;
+        .text-content h1 {
+            font-family: 'Playfair Display', serif; /* 标题使用衬线体，更显优雅 */
+            font-size: 4.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(30px);
+            /* 文字阴影增加层次 */
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        /* 动画类 */
-        .animate-in h1 { animation: slideUp 0.8s var(--transition-curve) forwards 0.1s; }
-        .animate-in p  { animation: slideUp 0.8s var(--transition-curve) forwards 0.2s; }
-        .animate-in .btn { animation: slideUp 0.8s var(--transition-curve) forwards 0.3s; }
+        .text-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            max-width: 90%;
+            font-weight: 300;
+        }
 
-        @keyframes slideUp {
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 40px;
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            transition: all 0.4s var(--transition-curve);
+            opacity: 0;
+            transform: translateY(30px);
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .cta-btn:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            padding-right: 50px; /* Hover时按钮变长 */
+        }
+
+        .cta-btn i {
+            margin-left: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* 动画类：用于JS控制入场 */
+        .animate-in {
+            animation: textReveal 0.8s var(--transition-curve) forwards;
+        }
+
+        @keyframes textReveal {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- 右侧导航区 (重点修改区域) --- */
-        .slider-navigation {
+        /* --- 右侧导航区 (Gallery) --- */
+        .slider-nav {
             display: flex;
-            gap: 15px; /* 减小间距，增加连贯感 */
-            align-items: center;
-            height: 400px; /* 给定高度以便对齐 */
+            gap: 20px;
+            align-items: center; /* 垂直居中对齐 */
+            justify-content: flex-end; /* 靠右对齐 */
+            height: 400px; /* 限制区域高度 */
         }
 
         .nav-card {
-            /* 默认宽度 */
-            width: 80px; 
-            height: 120px;
-            border-radius: 16px;
             position: relative;
-            cursor: pointer;
+            width: 100px;
+            height: 160px;
+            border-radius: 12px;
             overflow: hidden;
-            /* 核心：这里控制卡片宽度变化的动画 */
-            transition: width 0.6s var(--transition-curve),
-                        height 0.6s var(--transition-curve),
-                        filter 0.4s ease;
-            
-            border: 1px solid rgba(255,255,255,0.1);
-            filter: grayscale(100%) brightness(0.7);
+            cursor: pointer;
+            transition: all 0.5s var(--transition-curve);
+            /* 默认状态：稍暗，带磨砂边框 */
+            filter: brightness(0.7) grayscale(0.4);
+            border: 1px solid transparent;
         }
 
-        /* 图片样式调整 - 实现“轨道滑动”的关键 */
         .nav-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            
-            /* 关键点：图片默认稍微放大，并且向左偏移 */
-            /* 这样当卡片变宽时，我们让图片向右复位，产生视差 */
-            transform: scale(1.2) translateX(-20%);
-            transition: transform 0.8s var(--transition-curve);
+            transition: transform 0.6s ease;
         }
 
-        /* 选中状态 */
+        /* 激活状态：变大、变亮、白边框 */
         .nav-card.active {
-            width: 240px; /* 变宽 */
-            height: 340px; /* 变高 */
-            filter: grayscale(0%) brightness(1);
-            border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            width: 160px;
+            height: 240px;
+            filter: brightness(1) grayscale(0);
+            border: 2px solid #fff;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             z-index: 10;
         }
 
-        /* 选中状态下的图片动画 */
-        .nav-card.active img {
-            /* 图片复位，制造出“滑进视野”的感觉 */
-            transform: scale(1.1) translateX(0%);
+        .nav-card:hover img, .nav-card.active img {
+            transform: scale(1.1);
         }
 
-        /* 悬停状态 (非选中) */
-        .nav-card:not(.active):hover {
-            height: 130px; /* 微微变高提示可点击 */
-            filter: grayscale(0%) brightness(0.9);
-        }
-
-        .card-content {
+        .nav-info {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            padding: 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: #fff;
             opacity: 0;
-            transform: translateY(20px);
-            transition: 0.4s 0.3s; /* 延迟更久一点，等卡片展开 */
+            transform: translateY(10px);
+            transition: 0.3s;
         }
 
-        .nav-card.active .card-content {
+        .nav-info span {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2px;
+        }
+
+        .nav-info h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-card.active .nav-info {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .card-num {
-            font-size: 3rem;
-            font-weight: 800;
-            color: rgba(255,255,255,0.1);
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            line-height: 1;
-            transition: opacity 0.3s;
-        }
-        
-        /* 选中时数字变淡，以免干扰 */
-        .nav-card.active .card-num {
-            opacity: 0.05;
-        }
+        /* --- 移动端适配 --- */
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+                padding: 40px 20px;
+                text-align: center;
+            }
 
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            display: block;
-            white-space: nowrap; /* 防止换行 */
-        }
-        
-        .card-subtitle {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.7);
-            margin-top: 4px;
-            display: block;
-        }
+            .text-content {
+                padding-right: 0;
+                margin: 0 auto;
+                padding-top: 60px;
+            }
 
-        /* --- 手机端适配 --- */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                justify-content: flex-end;
-                padding: 30px;
+            .text-content h1 {
+                font-size: 3rem;
             }
-            .content-wrapper {
-                margin-bottom: 20px;
-                padding-bottom: 0;
+
+            .slider-nav {
                 width: 100%;
-            }
-            .content-text h1 {
-                font-size: 2.5rem;
-            }
-            .slider-navigation {
-                width: 100%;
-                height: 200px;
-                overflow-x: auto;
-                padding: 10px 0;
-                justify-content: flex-start;
-                align-items: flex-end;
+                justify-content: center;
+                height: auto;
+                padding-bottom: 20px;
                 gap: 10px;
             }
-            .nav-card.active {
-                width: 160px;
-                height: 220px;
-                flex-shrink: 0;
-            }
+
             .nav-card {
-                flex-shrink: 0;
+                width: 70px;
+                height: 110px;
+            }
+            
+            .nav-card.active {
+                width: 90px;
+                height: 140px;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="background-wrapper">
-        <div class="overlay"></div>
-        <div class="bg-image" id="bg-img"></div>
-    </div>
+    <div class="bg-container" id="bg-container">
+        </div>
+    <div class="overlay"></div>
 
-    <div class="container">
-        <div class="content-wrapper">
-            <div class="content-text" id="text-container">
-                <h1 id="main-title">Personal<br>Interface</h1>
-                <p id="main-desc">探索设计与代码的边界。这里是 Libform 的个人空间，专注于创造具有情感连接的数字体验。</p>
-                <a href="#" class="btn" id="learn-more-btn">
-                    Explore More <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+    <div class="main-container">
+        <div class="text-content">
+            <h1 id="title">Explore the<br>Unseen World</h1>
+            <p id="desc">这里是我的个人主页。我致力于将美学与代码完美融合，创造出具有情感连接的数字体验。</p>
+            <a href="#" id="link" class="cta-btn">
+                Discover More <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
-        <div class="slider-navigation">
-            <div class="nav-card" onclick="changeSlide(0)">
-                <span class="card-num">01</span>
-                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop" alt="Profile">
-                <div class="card-content">
-                    <span class="card-title">关于我</span>
-                    <span class="card-subtitle">Designer & Dev</span>
+        <div class="slider-nav">
+            <div class="nav-card active" onclick="updateSlider(0)">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop" alt="Mountains">
+                <div class="nav-info">
+                    <span>01</span>
+                    <h4>关于我</h4>
                 </div>
             </div>
-            
-            <div class="nav-card" onclick="changeSlide(1)">
-                <span class="card-num">02</span>
-                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop" alt="Experience">
-                <div class="card-content">
-                    <span class="card-title">我的经历</span>
-                    <span class="card-subtitle">Journey so far</span>
+            <div class="nav-card" onclick="updateSlider(1)">
+                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop" alt="Nature">
+                <div class="nav-info">
+                    <span>02</span>
+                    <h4>项目经历</h4>
                 </div>
             </div>
-
-            <div class="nav-card" onclick="changeSlide(2)">
-                <span class="card-num">03</span>
-                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop" alt="Projects">
-                <div class="card-content">
-                    <span class="card-title">项目作品</span>
-                    <span class="card-subtitle">Selected Works</span>
+            <div class="nav-card" onclick="updateSlider(2)">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop" alt="Experience">
+                <div class="nav-info">
+                    <span>03</span>
+                    <h4>设计作品</h4>
                 </div>
             </div>
-
-            <div class="nav-card" onclick="changeSlide(3)">
-                <span class="card-num">04</span>
-                <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop" alt="Contact">
-                <div class="card-content">
-                    <span class="card-title">联系我</span>
-                    <span class="card-subtitle">Get in Touch</span>
+            <div class="nav-card" onclick="updateSlider(3)">
+                <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=2070&auto=format&fit=crop" alt="Contact">
+                <div class="nav-info">
+                    <span>04</span>
+                    <h4>联系方式</h4>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 数据源
+        // 数据配置
         const slides = [
             {
                 title: "Personal<br>Interface",
-                desc: "你好，我是 Libform。这是一张关于我的个人名片。我专注于 UI 设计与全栈开发，致力于创造令人惊叹的数字体验。",
-                img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop", 
-                link: "#"
-            },
-            {
-                title: "My<br>Experience",
-                desc: "在过去的几年里，我参与了多个关键项目的设计与落地。从初创公司的 0 到 1，到成熟产品的迭代更新，我积累了丰富的实战经验。",
-                img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop",
-                link: "#"
+                desc: "你好，我是 Libform。这是一张关于我的数字名片。专注于 UI 设计与全栈开发，探索像素与逻辑的边界。",
+                img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
+                link: "#about"
             },
             {
                 title: "Selected<br>Projects",
-                desc: "MOE PLANET 是我最近的得意之作，探索宠物与科技的边界。点击此处查看更多设计细节与代码实现。",
-                img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop",
-                link: "#"
+                desc: "MOE PLANET 是我近期的代表作。通过 Flutter 与现代设计语言，重新定义宠物社交体验。",
+                img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop",
+                link: "#projects"
             },
             {
-                title: "Get In<br>Touch",
-                desc: "无论是工作机会还是灵感交流，我都非常期待与你联系。发送邮件或访问我的 GitHub 主页。",
-                img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop",
-                link: "mailto:example@email.com"
+                title: "Design<br>Philosophy",
+                desc: "我相信少即是多。优秀的设计应该是隐形的，它服务于功能，却又能触动人心。",
+                img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop",
+                link: "#design"
+            },
+            {
+                title: "Let's<br>Connect",
+                desc: "无论是技术探讨还是灵感碰撞，我都期待与你交流。点击下方按钮发送邮件。",
+                img: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=2070&auto=format&fit=crop",
+                link: "mailto:hello@example.com"
             }
         ];
 
-        const bgImg = document.getElementById('bg-img');
-        const mainTitle = document.getElementById('main-title');
-        const mainDesc = document.getElementById('main-desc');
-        const learnMoreBtn = document.getElementById('learn-more-btn');
-        const textContainer = document.getElementById('text-container');
+        const titleEl = document.getElementById('title');
+        const descEl = document.getElementById('desc');
+        const linkEl = document.getElementById('link');
+        const bgContainer = document.getElementById('bg-container');
         const cards = document.querySelectorAll('.nav-card');
 
-        let currentIndex = -1; // 用于追踪当前索引，避免重复点击动画
+        let currentIndex = 0;
 
-        function changeSlide(index) {
-            // 如果点击的是当前已经激活的，则不执行任何操作（防止动画重置）
-            if (currentIndex === index) return;
+        // 初始化背景图
+        function initBackgrounds() {
+            slides.forEach((slide, index) => {
+                const img = document.createElement('img');
+                img.src = slide.img;
+                img.classList.add('bg-image');
+                if(index === 0) img.classList.add('active');
+                img.dataset.index = index;
+                bgContainer.appendChild(img);
+            });
+            animateText(); // 初始文字动画
+        }
+
+        // 切换主逻辑
+        function updateSlider(index) {
+            if (index === currentIndex && index !== 0) return; // 避免重复点击 (除了初始化)
             currentIndex = index;
 
-            const data = slides[index];
+            // 1. 切换背景 (Crossfade)
+            const bgImages = document.querySelectorAll('.bg-image');
+            bgImages.forEach(img => {
+                if(parseInt(img.dataset.index) === index) {
+                    img.classList.add('active');
+                } else {
+                    img.classList.remove('active');
+                }
+            });
 
-            // 1. 背景处理
-            bgImg.style.opacity = '0.5'; 
-            
-            setTimeout(() => {
-                bgImg.style.backgroundImage = `url('${data.img}')`;
-                bgImg.style.opacity = '1';
-                bgImg.style.transition = 'none';
-                bgImg.style.transform = 'scale(1)';
-                void bgImg.offsetWidth; // 强制重绘
-                bgImg.style.transition = 'transform 10s ease-out, opacity 0.6s ease';
-                bgImg.style.transform = 'scale(1.1)';
-            }, 300);
+            // 2. 切换文字 (先出后进)
+            resetTextAnimation(() => {
+                titleEl.innerHTML = slides[index].title;
+                descEl.innerText = slides[index].desc;
+                linkEl.href = slides[index].link;
+                animateText();
+            });
 
-            // 2. 文字动画
-            textContainer.classList.remove('animate-in');
-            
-            setTimeout(() => {
-                mainTitle.innerHTML = data.title;
-                mainDesc.innerText = data.desc;
-                learnMoreBtn.href = data.link;
-                textContainer.classList.add('animate-in');
-            }, 300);
-
-            // 3. 卡片状态更新 (移除了HTML里的onclick中的active类，完全交由JS控制)
+            // 3. 切换卡片状态
             cards.forEach((card, i) => {
                 if (i === index) {
                     card.classList.add('active');
@@ -438,11 +392,37 @@
             });
         }
 
-        // 初始化：解决“黑屏”问题
-        window.onload = () => {
-            // 立即加载第一张图的数据
-            changeSlide(0);
-        };
+        // 文字重置动画 (淡出)
+        function resetTextAnimation(callback) {
+            titleEl.style.animation = 'none';
+            descEl.style.animation = 'none';
+            linkEl.style.animation = 'none';
+            
+            // 强制重绘
+            void titleEl.offsetWidth; 
+
+            // 淡出旧文字 (简单处理：直接变透明或等待极短时间)
+            titleEl.style.opacity = '0';
+            descEl.style.opacity = '0';
+            linkEl.style.opacity = '0';
+
+            setTimeout(callback, 200);
+        }
+
+        // 文字进场动画 (交错)
+        function animateText() {
+            // 给每个元素应用动画，并设置不同的延迟
+            titleEl.style.animation = 'textReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+            
+            descEl.style.animation = 'textReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+            descEl.style.animationDelay = '0.1s';
+            
+            linkEl.style.animation = 'textReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+            linkEl.style.animationDelay = '0.2s';
+        }
+
+        // 启动
+        window.onload = initBackgrounds;
 
     </script>
 </body>
