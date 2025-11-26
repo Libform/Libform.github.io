@@ -9,7 +9,6 @@
 
     <style>
         :root {
-            --primary-color: #ffffff;
             --transition-curve: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
@@ -21,10 +20,10 @@
             background: #000; color: #fff;
         }
 
-        /* 背景层：增加默认深色背景，防止图片挂了全黑 */
+        /* --- 背景层 --- */
         .bg-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-            background: #111; /* 保底色 */
+            background: #0a0a0a; 
         }
 
         .bg-image {
@@ -38,14 +37,23 @@
 
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.2) 100%);
+            background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.2) 100%);
             z-index: 2;
         }
 
+        /* --- 主布局 --- */
         .main-container {
             position: relative; z-index: 10; width: 100%; height: 100%;
             display: grid; grid-template-columns: 1.2fr 1fr;
             padding: 0 8vw; align-items: center;
+            transition: transform 0.5s var(--transition-curve); /* 用于打开库时的缩放效果 */
+        }
+        
+        /* 当库打开时，主界面稍微后退 */
+        .main-container.library-open {
+            transform: scale(0.95);
+            filter: blur(5px) brightness(0.5);
+            pointer-events: none;
         }
 
         .text-content { padding-right: 60px; }
@@ -72,6 +80,7 @@
             transition: all 0.4s var(--transition-curve);
             opacity: 0; transform: translateY(30px);
             background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            cursor: pointer;
         }
 
         .cta-btn:hover {
@@ -94,7 +103,7 @@
             transition: all 0.6s var(--transition-curve);
             filter: brightness(0.6) grayscale(0.6);
             border: 1px solid rgba(255,255,255,0.1);
-            background: #333; /* 图片加载失败时的底色 */
+            background: #222;
         }
 
         .nav-card img {
@@ -121,22 +130,78 @@
         }
 
         .nav-info h4 { font-size: 1rem; font-weight: 500; letter-spacing: 1px; }
-
         .nav-card.active .nav-info { opacity: 1; transform: translateY(0); }
 
+        /* --- 知识库 Modal (Pop-up) --- */
+        .library-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 100;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            display: flex; justify-content: flex-end; /* 靠右滑出 */
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .library-modal.active {
+            opacity: 1; pointer-events: all;
+        }
+
+        .library-content {
+            width: 60%; /* 占据右侧 60% */
+            height: 100%;
+            background: #111;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            padding: 60px 80px;
+            overflow-y: auto;
+            transform: translateX(100px);
+            transition: transform 0.5s var(--transition-curve);
+        }
+
+        .library-modal.active .library-content {
+            transform: translateX(0);
+        }
+
+        .close-btn {
+            position: absolute; top: 40px; right: 40px;
+            background: none; border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
+        }
+        .close-btn:hover { background: #fff; color: #000; }
+
+        .library-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem; margin-bottom: 10px;
+        }
+        .library-header p {
+            color: #888; font-size: 0.9rem; margin-bottom: 50px;
+        }
+
+        /* 笔记列表项 */
+        .note-item {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .note-date { font-size: 0.8rem; color: #666; margin-bottom: 10px; display: block; }
+        .note-title { font-size: 1.8rem; margin-bottom: 20px; font-weight: 600; color: #eee; }
+        
+        .note-body {
+            font-size: 1rem; line-height: 1.8; color: #aaa;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .note-body strong { color: #fff; }
+        .note-body ul { margin-left: 20px; margin-top: 10px; }
+        .note-body li { margin-bottom: 8px; }
+
         @media (max-width: 900px) {
-            .main-container {
-                grid-template-columns: 1fr; grid-template-rows: 1fr auto;
-                padding: 40px 20px; text-align: left;
-            }
-            .text-content { padding-right: 0; padding-top: 80px; }
-            .text-content h1 { font-size: 3.5rem; }
-            .text-content p { max-width: 100%; }
-            .slider-nav {
-                width: 100%; justify-content: flex-start; overflow-x: auto;
-                padding-bottom: 20px; gap: 10px;
-            }
-            .nav-card { flex-shrink: 0; }
+            .main-container { padding: 40px 20px; }
+            .library-content { width: 100%; padding: 40px 20px; }
+            .library-header h2 { font-size: 2rem; }
         }
     </style>
 </head>
@@ -145,11 +210,11 @@
     <div class="bg-container" id="bg-container"></div>
     <div class="overlay"></div>
 
-    <div class="main-container">
+    <div class="main-container" id="main-container">
         <div class="text-content">
             <h1 id="title">Hello,<br>I'm Fang.</h1>
             <p id="desc">...</p>
-            <a href="#" id="link" class="cta-btn">
+            <a href="#" id="link" class="cta-btn" onclick="handleBtnClick(event)">
                 More Info <i class="fas fa-arrow-right"></i>
             </a>
         </div>
@@ -174,40 +239,83 @@
         </div>
     </div>
 
+    <div class="library-modal" id="library-modal">
+        <button class="close-btn" onclick="closeLibrary()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="library-content">
+            <div class="library-header">
+                <h2>Fang's Library</h2>
+                <p>Thoughts, Notes, and Inspirations.</p>
+            </div>
+
+            <div class="note-item">
+                <span class="note-date">2025.11.25</span>
+                <h3 class="note-title">陆奇 USTC 创业分享会笔记</h3>
+                <div class="note-body">
+                    <p>每个人都着急说话，每个人都没有把话说完。在这次分享中，陆奇博士谈到了关于创业、机会与个人的深刻见解。</p>
+                    <br>
+                    <strong>1. 关于机会 (Opportunity)</strong>
+                    <p>历史上每一次大的技术变革，都会带来结构性的机会。现在的 AI 浪潮，堪比当年的互联网爆发。我们要寻找那些由于技术边界扩展而新产生的“未被满足的需求”。</p>
+                    <br>
+                    <strong>2. 创始人的特质 (Founder)</strong>
+                    <ul>
+                        <li><strong>Vision (愿景):</strong> 能看到别人看不到的未来。</li>
+                        <li><strong>Execution (执行):</strong> 将愿景落地的能力，速度是关键。</li>
+                        <li><strong>Resilience (韧性):</strong> 面对至暗时刻的坚持。</li>
+                    </ul>
+                    <br>
+                    <strong>3. 也就是行动 (Action)</strong>
+                    <p>陆奇强调，想得再多不如动手去做。在实践中迭代，在反馈中修正。Early adoption 带来的不仅仅是先发优势，更是认知的护城河。</p>
+                    <br>
+                    <p style="font-style: italic; color: #666;">（笔记内容整理自 comydream.github.io）</p>
+                </div>
+            </div>
+
+            <div class="note-item">
+                <span class="note-date">2025.10.15</span>
+                <h3 class="note-title">Design Philosophy</h3>
+                <div class="note-body">
+                    <p>Less is more. 设计不应该喧宾夺主，而应该像空气一样自然。</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <script>
-        // --- 修复版：使用了更稳定的图片地址 ---
-        // 如果这些图片在你的网络下依然打不开，强烈建议下载图片到本地使用
         const slides = [
             {
                 title: "Hello,<br>I'm Fang.",
                 desc: "圣洁者堕落，禁欲者高潮，极致的反差令人着迷，极致的性感莫过于此",
-                // 替换为一张经典的黑白公路人像或剪影，更易加载
-                img: "https://images.pexels.com/photos/1689731/pexels-photo-1689731.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                link: "#about",
+                img: "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                type: "link", // 类型：链接
+                target: "#about",
                 btnText: "About Me"
             },
             {
                 title: "Born<br>Free.",
                 desc: "真心就像内裤，大家都穿在身上，谁也不知道对方有没有穿，但是我戴在头上，你第一眼就可以看到我是真心的",
-                // 替换为宽阔的公路图
-                img: "https://images.pexels.com/photos/346885/pexels-photo-346885.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                link: "#freedom",
+                img: "https://images.pexels.com/photos/3363364/pexels-photo-3363364.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                type: "link",
+                target: "#freedom",
                 btnText: "Explore"
             },
             {
+                // [重点修改] 类型改为 'library'，触发 JS 打开弹窗
                 title: "Create<br>& Notes.",
                 desc: "每个人都着急说话，每个人都没有把话说完。—— 陆奇 USTC 创业分享会笔记",
-                // 替换为更有质感的办公/思考图
-                img: "https://images.pexels.com/photos/210243/pexels-photo-210243.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                link: "https://comydream.github.io/2025/11/25/lu-qi-ustc-talk-25/", 
-                btnText: "Read Note"
+                img: "https://images.pexels.com/photos/247599/pexels-photo-247599.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                type: "library", 
+                target: "library", 
+                btnText: "Open Library" 
             },
             {
                 title: "Let's<br>Talk.",
                 desc: "别犹豫",
-                // 替换为城市夜景或手机
-                img: "https://images.pexels.com/photos/323503/pexels-photo-323503.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                link: "mailto:example@email.com",
+                img: "https://images.pexels.com/photos/3222415/pexels-photo-3222415.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                type: "email",
+                target: "mailto:example@email.com",
                 btnText: "Send Email"
             }
         ];
@@ -217,36 +325,57 @@
         const linkEl = document.getElementById('link');
         const bgContainer = document.getElementById('bg-container');
         const cards = document.querySelectorAll('.nav-card');
+        const libraryModal = document.getElementById('library-modal');
+        const mainContainer = document.getElementById('main-container');
 
         let currentIndex = 0;
 
         function init() {
-            // 1. 初始化背景图
             slides.forEach((slide, index) => {
                 const img = document.createElement('img');
                 img.src = slide.img;
                 img.classList.add('bg-image');
                 if(index === 0) img.classList.add('active');
                 img.dataset.index = index;
-                // 增加图片加载错误的监听，如果挂了就显示灰色背景
-                img.onerror = function() { this.style.display = 'none'; }; 
+                img.onerror = function() { this.style.display = 'none'; };
                 bgContainer.appendChild(img);
                 
-                // 2. 初始化小图
                 const thumb = document.getElementById(`thumb-${index}`);
                 if(thumb) thumb.src = slide.img;
             });
-            
-            // 3. 初始化文字
             updateTextContent(0);
             animateText();
+        }
+
+        // 处理按钮点击
+        function handleBtnClick(e) {
+            e.preventDefault(); // 阻止默认跳转
+            const currentSlide = slides[currentIndex];
+
+            if (currentSlide.type === 'library') {
+                openLibrary();
+            } else if (currentSlide.type === 'email') {
+                window.location.href = currentSlide.target;
+            } else {
+                // 普通链接逻辑
+                console.log("Navigating to:", currentSlide.target);
+            }
+        }
+
+        function openLibrary() {
+            libraryModal.classList.add('active');
+            mainContainer.classList.add('library-open'); // 背景虚化
+        }
+
+        function closeLibrary() {
+            libraryModal.classList.remove('active');
+            mainContainer.classList.remove('library-open');
         }
 
         function updateSlider(index) {
             if (index === currentIndex && index !== 0) return; 
             currentIndex = index;
 
-            // 背景切换
             const bgImages = document.querySelectorAll('.bg-image');
             bgImages.forEach(img => {
                 if(parseInt(img.dataset.index) === index) {
@@ -256,13 +385,11 @@
                 }
             });
 
-            // 文字切换
             resetTextAnimation(() => {
                 updateTextContent(index);
                 animateText();
             });
 
-            // 卡片高亮
             cards.forEach((card, i) => {
                 if (i === index) {
                     card.classList.add('active');
@@ -276,7 +403,6 @@
             const currentSlide = slides[index];
             titleEl.innerHTML = currentSlide.title;
             descEl.innerText = currentSlide.desc;
-            linkEl.href = currentSlide.link;
             linkEl.innerHTML = `${currentSlide.btnText} <i class="fas fa-arrow-right"></i>`;
         }
 
