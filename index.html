@@ -1,289 +1,195 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>林晨 | 视觉设计</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;500;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
-    
-    <style>
-        /* ====================
-           1. 极简变量
-           ==================== */
-        :root {
-            /* 纸张白：一种很浅的暖灰，比纯白更高级 */
-            --bg-color: #f9f9f9; 
-            /* 深炭灰：不要用纯黑#000，太刺眼 */
-            --text-main: #222222; 
-            /* 中灰：用于辅助信息 */
-            --text-sub: #666666; 
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
+
+// 模拟数据：你的作品集或照片
+const cards = [
+  {
+    id: 1,
+    title: "Mountain Escape",
+    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800",
+  },
+  {
+    id: 2,
+    title: "Urban Architecture",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800",
+  },
+  {
+    id: 3,
+    title: "Ocean Breeze",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800",
+  },
+  {
+    id: 4,
+    title: "Desert Vibes",
+    image: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&q=80&w=800",
+  },
+  {
+    id: 5,
+    title: "Forest Mist",
+    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800",
+  },
+];
+
+export default function PortfolioCoverFlow() {
+  const [activeIndex, setActiveIndex] = useState(2); // 默认选中中间的
+
+  const nextCard = () => {
+    setActiveIndex((prev) => (prev + 1 < cards.length ? prev + 1 : prev));
+  };
+
+  const prevCard = () => {
+    setActiveIndex((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+  };
+
+  // 计算卡片样式的核心函数
+  const getCardStyle = (index) => {
+    const isCenter = index === activeIndex;
+    const isLeft = index < activeIndex;
+    const isRight = index > activeIndex;
+    const distance = Math.abs(activeIndex - index);
+
+    // 基础样式配置
+    let x = 0;
+    let zIndex = 10 - distance;
+    let scale = 1;
+    let rotateY = 0;
+    let opacity = 1;
+
+    if (isCenter) {
+      x = 0;
+      scale = 1.2; // 中间放大
+      rotateY = 0;
+      opacity = 1;
+    } else if (isLeft) {
+      x = -160 * distance; // 向左偏移量
+      scale = 1 - distance * 0.15; // 逐级变小
+      rotateY = 25; // 向右看
+      opacity = 1 - distance * 0.2;
+    } else if (isRight) {
+      x = 160 * distance; // 向右偏移量
+      scale = 1 - distance * 0.15;
+      rotateY = -25; // 向左看
+      opacity = 1 - distance * 0.2;
+    }
+
+    return { x, zIndex, scale, rotateY, opacity };
+  };
+
+  return (
+    <div className="min-h-screen bg-white text-slate-900 overflow-hidden font-sans selection:bg-black selection:text-white">
+      {/* 导航栏 */}
+      <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+        <div className="font-bold text-xl tracking-tighter">SioFU_AI</div>
+        <div className="hidden md:flex space-x-8 text-sm font-medium text-slate-500">
+          <a href="#" className="hover:text-black transition-colors">Creative Platform</a>
+          <a href="#" className="hover:text-black transition-colors">Agents</a>
+          <a href="#" className="hover:text-black transition-colors">Resources</a>
+        </div>
+        <button className="px-5 py-2 bg-black text-white rounded-full text-sm font-medium hover:bg-slate-800 transition-colors">
+          Sign In
+        </button>
+      </nav>
+
+      {/* 主体内容区 */}
+      <main className="flex flex-col items-center justify-center mt-10 md:mt-20 relative">
+        
+        {/* 3D 轮播区域容器 */}
+        <div className="relative w-full h-[400px] flex items-center justify-center perspective-1000">
+          {/* 这里 perspective-1000 是产生3D纵深感的关键 */}
+          <div className="relative w-full max-w-4xl flex justify-center items-center h-full perspective-container">
             
-            --font-heading: 'Playfair Display', 'Noto Serif SC', serif;
-            --font-body: 'Inter', 'Noto Serif SC', sans-serif;
-            
-            --container-width: 1200px;
-        }
+            {cards.map((card, index) => {
+              const style = getCardStyle(index);
+              
+              // 只渲染视野附近的卡片以优化性能
+              if (Math.abs(activeIndex - index) > 2) return null;
 
-        /* ====================
-           2. 基础重置
-           ==================== */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-body);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased; /* 让字体在Mac上更细更清晰 */
-        }
-
-        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
-        a:hover { opacity: 0.6; }
-
-        img { width: 100%; display: block; }
-
-        /* ====================
-           3. 极简导航 (固定在顶部)
-           ==================== */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 40px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(249, 249, 249, 0.9); /* 轻微毛玻璃 */
-            backdrop-filter: blur(10px);
-            z-index: 100;
-        }
-
-        .logo {
-            font-weight: 600;
-            font-size: 1.2rem;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-links { display: flex; gap: 40px; }
-        .nav-links a {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            font-weight: 500;
-        }
-        .nav-links a.active { color: var(--text-main); }
-
-        /* ====================
-           4. 头部介绍 (左对齐，大量留白)
-           ==================== */
-        header.hero {
-            padding: 220px 60px 120px;
-            max-width: var(--container-width);
-            margin: 0 auto;
-        }
-
-        /* 这种超大号文字是瑞士风格的精髓 */
-        h1.hero-title {
-            font-family: var(--font-heading);
-            font-size: clamp(3.5rem, 6vw, 5.5rem);
-            font-weight: 400;
-            line-height: 1.1;
-            margin-bottom: 40px;
-            color: #111;
-        }
-
-        p.hero-intro {
-            font-size: 1.1rem;
-            color: var(--text-sub);
-            max-width: 500px;
-            margin-top: 20px;
-            font-weight: 300;
-        }
-
-        /* ====================
-           5. 作品展示 (网格布局)
-           ==================== */
-        section.gallery {
-            padding: 0 60px 150px;
-            max-width: var(--container-width);
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-sub);
-            margin-bottom: 60px;
-            display: block;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 20px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 简单大气的双列布局 */
-            gap: 100px 60px; /* 拉大行间距，解决“乱”的问题 */
-        }
-
-        /* 让偶数项向下偏移，打破呆板 */
-        .grid-item:nth-child(even) {
-            margin-top: 100px; 
-        }
-
-        .work-card {
-            cursor: pointer;
-        }
-
-        .img-container {
-            overflow: hidden;
-            margin-bottom: 25px;
-            /* 给图片一个极淡的阴影，增加层次 */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-        }
-
-        .work-img {
-            transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
-        }
-
-        .work-card:hover .work-img {
-            transform: scale(1.03);
-        }
-
-        .work-info h3 {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            font-weight: 400;
-            margin-bottom: 5px;
-        }
-
-        .work-info span {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-        }
-
-        /* ====================
-           6. 极简底栏
-           ==================== */
-        footer {
-            padding: 100px 60px;
-            border-top: 1px solid #eaeaea;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            background-color: white; /* 底部纯白区分 */
-        }
-
-        .contact-big {
-            font-family: var(--font-heading);
-            font-size: 3rem;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            display: block;
-            color: var(--text-main);
-        }
-
-        .footer-info {
-            color: var(--text-sub);
-            font-size: 0.9rem;
-        }
-
-        /* ====================
-           移动端适配
-           ==================== */
-        @media (max-width: 768px) {
-            nav { padding: 20px; }
-            header.hero { padding: 150px 20px 80px; }
-            section.gallery { padding: 0 20px 100px; }
-            .grid { grid-template-columns: 1fr; gap: 60px; }
-            .grid-item:nth-child(even) { margin-top: 0; }
-            footer { flex-direction: column; align-items: flex-start; gap: 40px; padding: 60px 20px; }
-            .contact-big { font-size: 2rem; }
-        }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <div class="logo">Lin Chen.</div>
-        <div class="nav-links">
-            <a href="#" class="active">Work</a>
-            <a href="#">Profile</a>
-            <a href="#">Contact</a>
+              return (
+                <motion.div
+                  key={card.id}
+                  className="absolute w-64 h-80 md:w-72 md:h-96 rounded-2xl shadow-2xl overflow-hidden bg-slate-100 border border-slate-200 cursor-pointer"
+                  initial={false}
+                  animate={{
+                    x: style.x,
+                    scale: style.scale,
+                    rotateY: style.rotateY,
+                    zIndex: style.zIndex,
+                    opacity: style.opacity,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 20
+                  }}
+                  onClick={() => setActiveIndex(index)}
+                  style={{
+                    transformStyle: "preserve-3d", // 保持3D空间
+                  }}
+                >
+                  <img 
+                    src={card.image} 
+                    alt={card.title} 
+                    className="w-full h-full object-cover pointer-events-none"
+                  />
+                  {/* 遮罩层，增加质感 */}
+                  <div className={`absolute inset-0 bg-black/10 transition-opacity duration-300 ${index === activeIndex ? 'opacity-0' : 'opacity-20'}`} />
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
-    </nav>
 
-    <header class="hero">
-        <h1 class="hero-title">
-            Digital Designer <br>
-            & Art Director
-        </h1>
-        <p class="hero-intro">
-            你好，我是林晨。<br>
-            专注于为品牌构建清晰、理性的视觉系统。<br>
-            我相信好的设计是剔除一切噪音后的纯粹。
-        </p>
-    </header>
+        {/* 底部控制与标题 */}
+        <div className="text-center mt-12 space-y-4 max-w-2xl px-4">
+          
+          {/* 指示器/控制器 */}
+          <div className="flex items-center justify-center space-x-6 mb-6">
+             <button onClick={prevCard} disabled={activeIndex === 0} className="p-2 rounded-full hover:bg-slate-100 disabled:opacity-30 transition">
+               <ChevronLeft size={24} />
+             </button>
+             <div className="flex space-x-2">
+               {cards.map((_, idx) => (
+                 <button
+                   key={idx}
+                   onClick={() => setActiveIndex(idx)}
+                   className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === activeIndex ? 'w-6 bg-black' : 'bg-slate-300'}`}
+                 />
+               ))}
+             </div>
+             <button onClick={nextCard} disabled={activeIndex === cards.length - 1} className="p-2 rounded-full hover:bg-slate-100 disabled:opacity-30 transition">
+               <ChevronRight size={24} />
+             </button>
+          </div>
 
-    <section class="gallery">
-        <span class="section-label">Selected Works 2023 — 2025</span>
+          <motion.h1 
+            key={activeIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900"
+          >
+            {cards[activeIndex].title}
+          </motion.h1>
+          
+          <p className="text-slate-500 text-lg">
+            Make the perfect space for your newest creation.
+          </p>
 
-        <div class="grid">
-            
-            <div class="grid-item work-card">
-                <div class="img-container">
-                    <img src="https://images.unsplash.com/photo-1594913785232-fb9d2e737922?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 1">
-                </div>
-                <div class="work-info">
-                    <h3>Aesop Store</h3>
-                    <span>Space & Identity</span>
-                </div>
-            </div>
-
-            <div class="grid-item work-card">
-                <div class="img-container">
-                    <img src="https://images.unsplash.com/photo-1506097425191-7ad538b29cef?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 2">
-                </div>
-                <div class="work-info">
-                    <h3>Kinfolk Magazine</h3>
-                    <span>Editorial Design</span>
-                </div>
-            </div>
-
-            <div class="grid-item work-card">
-                <div class="img-container">
-                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 3">
-                </div>
-                <div class="work-info">
-                    <h3>Mono Furniture</h3>
-                    <span>Product Photography</span>
-                </div>
-            </div>
-
-            <div class="grid-item work-card">
-                <div class="img-container">
-                    <img src="https://images.unsplash.com/photo-1620626330084-28a1fb742531?q=80&w=2670&auto=format&fit=crop" class="work-img" alt="Work 4">
-                </div>
-                <div class="work-info">
-                    <h3>Ceramic Art</h3>
-                    <span>Exhibition</span>
-                </div>
-            </div>
-
+          <div className="pt-8">
+             <button className="flex items-center space-x-2 mx-auto px-6 py-3 bg-black text-white rounded-full hover:bg-slate-800 transition-all hover:scale-105 active:scale-95">
+                <Play size={16} fill="currentColor" />
+                <span>Start Creating</span>
+             </button>
+          </div>
         </div>
-    </section>
 
-    <footer>
-        <div>
-            <a href="mailto:hello@lin.design" class="contact-big">hello@lin.design</a>
-            <p class="footer-info">Based in Shanghai. Available for freelance.</p>
-        </div>
-        <div class="footer-info">
-            © 2025 Lin Chen
-        </div>
-    </footer>
-
-</body>
-</html>
+      </main>
+      
+      {/* 悬浮按钮 (模拟视频右下角) */}
+      <div className="fixed bottom-8 right-8 bg-black text-white p-4 rounded-full shadow-xl flex items-center space-x-2 hover:scale-105 transition-transform cursor-pointer z-50">
+        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <span className="font-bold text-sm">Voice Chat</span>
+      </div>
+    </div>
+  );
+}
