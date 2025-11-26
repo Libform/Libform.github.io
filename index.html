@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIBFORM | 自由</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>林晨 | 独立设计师</title> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400&family=Noto+Serif+SC:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     
@@ -16,11 +15,9 @@
             --bg-color: #050505;
             --text-main: #ffffff;
             --text-sub: #a0a0a0;
-            --accent-color: #ffffff;
-            /* 字体栈更新：优先使用思源宋体/黑体 */
+            --border-color: rgba(255,255,255,0.1);
             --font-heading: 'Playfair Display', 'Noto Serif SC', serif; 
             --font-body: 'Lato', 'Noto Sans SC', sans-serif;
-            --spacing-unit: 20px;
         }
 
         /* ====================
@@ -33,7 +30,6 @@
         }
 
         body, html {
-            height: 100%;
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: var(--font-body);
@@ -62,7 +58,7 @@
 
         .logo {
             font-family: var(--font-heading);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -74,17 +70,14 @@
         }
 
         .nav-links a {
-            font-size: 0.9rem; /*稍微调大一点中文 */
+            font-size: 0.85rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            opacity: 0.7;
+            color: rgba(255,255,255,0.8);
             position: relative;
-            font-weight: 300;
         }
 
-        .nav-links a:hover {
-            opacity: 1;
-        }
+        .nav-links a:hover { color: #fff; }
 
         .nav-links a::after {
             content: '';
@@ -99,7 +92,7 @@
         .nav-links a:hover::after { width: 100%; }
 
         /* ====================
-           4. 英雄区域 (Hero)
+           4. 个人主页 Hero
            ==================== */
         .hero {
             height: 100vh;
@@ -108,6 +101,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            /* 背景图：建议换成一张更有氛围感的、或者你个人的黑白肖像（如果有的话），或者这种抽象建筑图 */
             background: url('https://images.unsplash.com/photo-1492571350019-22de08371fd3?q=80&w=2553&auto=format&fit=crop') no-repeat center center/cover;
         }
 
@@ -115,7 +109,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5); /* 加深遮罩，突出文字 */
             z-index: 1;
         }
 
@@ -123,13 +117,13 @@
             position: relative;
             z-index: 2;
             text-align: center;
-            max-width: 800px;
+            max-width: 900px;
             padding: 0 20px;
         }
 
         .tagline {
             font-size: 0.9rem;
-            letter-spacing: 6px;
+            letter-spacing: 4px;
             text-transform: uppercase;
             color: var(--text-sub);
             margin-bottom: 20px;
@@ -139,56 +133,96 @@
 
         h1 {
             font-family: var(--font-heading);
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-size: clamp(3rem, 7vw, 5.5rem); /* 调整字体大小，更加优雅 */
             line-height: 1.2;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             font-weight: 400;
-            /* 中文不必强制斜体，宋体本身就很美，这里取消 italic */
-            font-style: normal; 
             animation: fadeInUp 1.5s ease;
         }
         
         h1 span {
             display: block;
-            font-size: 0.5em; /* 副标题小一点 */
-            margin-top: 15px;
-            letter-spacing: 10px; /* 增加字间距营造呼吸感 */
-            font-weight: 300;
-        }
-
-        .btn-minimal {
-            display: inline-block;
-            padding: 15px 50px;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            font-size: 0.9rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(5px);
-            animation: fadeInUp 2s ease;
-            margin-top: 20px;
             font-family: var(--font-body);
+            font-size: 0.35em; 
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-top: 15px;
+            color: rgba(255,255,255,0.9);
         }
 
-        .btn-minimal:hover {
-            background-color: white;
-            color: black;
-            border-color: white;
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            color: var(--text-sub);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: bounce 2s infinite;
         }
 
         /* ====================
-           5. 内容展示区
+           5. 简介区域 (Bio) - 新增
+           ==================== */
+        .bio-section {
+            padding: 120px 60px 60px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .bio-text {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 40px;
+        }
+
+        .bio-sub {
+            font-size: 1rem;
+            color: var(--text-sub);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ====================
+           6. 精选作品 (Selected Works)
            ==================== */
         .content-section {
-            padding: 120px 60px; /* 增加上下间距 */
+            padding: 80px 60px 120px;
             background-color: var(--bg-color);
+        }
+
+        .section-header {
+            max-width: 1400px;
+            margin: 0 auto 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 400;
+        }
+        
+        .section-more {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            letter-spacing: 1px;
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 80px 60px; /* 增加行间距 */
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -196,224 +230,232 @@
         .card {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            cursor: pointer; /* 增加手型 */
+            gap: 25px;
+            group: cursor;
+        }
+
+        .card-img-wrapper {
+            overflow: hidden;
+            width: 100%;
+            height: 450px; /* 拉长图片比例，更具杂志感 */
         }
 
         .card-img {
             width: 100%;
-            height: 400px;
+            height: 100%;
             background-color: #1a1a1a;
             object-fit: cover;
             filter: grayscale(100%);
-            transition: all 0.6s ease; /* 变慢一点更优雅 */
+            transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .card:hover .card-img {
             filter: grayscale(0%);
-            transform: scale(1.02); /* 微弱的放大效果 */
+            transform: scale(1.05);
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
         }
 
         .card-title {
             font-family: var(--font-heading);
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 400;
-            letter-spacing: 1px;
         }
 
-        .card-desc {
+        .card-category {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             color: var(--text-sub);
-            font-size: 0.9rem;
-            line-height: 1.8; /* 增加行高 */
-            font-weight: 300;
-            text-align: justify; /* 两端对齐 */
         }
 
         /* ====================
-           New: 6. 底部栏 (Footer)
+           7. 个人底栏 (Footer)
            ==================== */
         footer {
-            background-color: #080808; /* 比背景稍浅一点的黑 */
-            padding: 80px 60px 40px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            font-family: var(--font-body);
+            background-color: #080808;
+            padding: 100px 60px 40px;
+            border-top: 1px solid var(--border-color);
         }
 
         .footer-content {
             max-width: 1400px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 40px;
+            text-align: center;
         }
 
-        .footer-brand h2 {
+        .footer-cta h2 {
             font-family: var(--font-heading);
+            font-size: 3rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .footer-cta p {
+            color: var(--text-sub);
+            margin-bottom: 50px;
+            font-size: 1.1rem;
+        }
+
+        .email-link {
+            display: inline-block;
             font-size: 1.5rem;
-            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 5px;
+            margin-bottom: 80px;
+        }
+        .email-link:hover { border-color: white; }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            color: #444;
+            font-size: 0.8rem;
+            text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .footer-brand p {
-            color: var(--text-sub);
-            font-size: 0.85rem;
-            max-width: 300px;
-            line-height: 1.6;
-        }
-
-        .footer-links {
+        .social-links {
             display: flex;
-            gap: 60px;
+            gap: 30px;
         }
-
-        .link-group h4 {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .link-group ul li {
-            margin-bottom: 12px;
-        }
-
-        .link-group ul li a {
-            color: var(--text-sub);
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
-        .link-group ul li a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            max-width: 1400px;
-            margin: 60px auto 0;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            justify-content: space-between;
-            color: #555;
-            font-size: 0.75rem;
-        }
+        .social-links a { color: var(--text-sub); }
+        .social-links a:hover { color: white; }
 
         /* ====================
-           7. 动画关键帧
+           动画
            ==================== */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
+            from { opacity: 0; transform: translateY(-40px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+            40% {transform: translateY(-10px) translateX(-50%);}
+            60% {transform: translateY(-5px) translateX(-50%);}
         }
 
         /* 移动端适配 */
         @media (max-width: 768px) {
             nav { padding: 20px; }
-            .nav-links { display: none; } 
+            .nav-links { display: none; }
             h1 { font-size: 3rem; }
-            .grid-container { gap: 40px; }
-            
-            .footer-content {
-                flex-direction: column;
-            }
-            .footer-links {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
+            .bio-text { font-size: 1.4rem; }
+            .footer-cta h2 { font-size: 2rem; }
+            .footer-bottom { flex-direction: column-reverse; gap: 20px; align-items: center; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">Libform.</div>
+        <div class="logo">Lin.</div>
         <div class="nav-links">
-            <a href="#">作品系列</a>
-            <a href="#">关于我们</a>
-            <a href="#">设计志</a>
-            <a href="#">联系</a>
+            <a href="#work">一些想法</a>
+            <a href="#about">关于我</a>
+            <a href="#contact">联系</a>
         </div>
     </nav>
 
     <div class="hero">
         <div class="hero-content">
-            <span class="tagline">Est. 2025</span>
+            <span class="tagline">Based in Shanghai</span>
             
             <h1>
-                冲突与自由<br>
-                <span>的艺术哲学</span>
+                LIN CHEN<br>
+                <span>Product Designer & Art Director</span>
             </h1>
-
-            <a href="#gallery" class="btn-minimal">即刻探索</a>
         </div>
+        <div class="scroll-indicator">Scroll</div>
     </div>
 
-    <section id="gallery" class="content-section">
+    <section id="about" class="bio-section">
+        <p class="bio-text">
+            "设计不仅是视觉的愉悦，<br>更是对混乱世界的有序回应。"
+        </p>
+        <p class="bio-sub">
+            我24岁，我是一名目前拥有24年呼吸经验的人。
+        </p>
+    </section>
+
+    <section id="work" class="content-section">
+        <div class="section-header">
+            <h3 class="section-title">Selected Works</h3>
+            <a href="#" class="section-more">View Archive -></a>
+        </div>
+
         <div class="grid-container">
             
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 1">
-                <h3 class="card-title">极简主义</h3>
-                <p class="card-desc">摒弃繁复的修饰，剥离一切不必要的元素，只保留最核心的情感表达。少，即是万物。</p>
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2000&auto=format&fit=crop" class="card-img" alt="Work 1">
+                </div>
+                <div class="card-meta">
+                    <h3 class="card-title">Muse Gallery</h3>
+                    <span class="card-category">UI / UX Design</span>
+                </div>
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1507643179173-442f8504099b?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 2">
-                <h3 class="card-title">结构美学</h3>
-                <p class="card-desc">在混乱中建立秩序，在几何的严谨与光影的流动中，寻找一种理性的浪漫。</p>
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" class="card-img" alt="Work 2">
+                </div>
+                <div class="card-meta">
+                    <h3 class="card-title">Noir Perfume</h3>
+                    <span class="card-category">Branding</span>
+                </div>
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 3">
-                <h3 class="card-title">静谧留白</h3>
-                <p class="card-desc">此处无声胜有声。留白不仅是空间的让渡，更是想象力的延伸，是最高级的语言。</p>
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1545239351-ef35f43d514b?q=80&w=2574&auto=format&fit=crop" class="card-img" alt="Work 3">
+                </div>
+                <div class="card-meta">
+                    <h3 class="card-title">Silence Architecture</h3>
+                    <span class="card-category">Photography</span>
+                </div>
+            </div>
+
+             <div class="card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?q=80&w=2574&auto=format&fit=crop" class="card-img" alt="Work 4">
+                </div>
+                <div class="card-meta">
+                    <h3 class="card-title">Future Tech</h3>
+                    <span class="card-category">Web Design</span>
+                </div>
             </div>
 
         </div>
     </section>
 
-    <footer>
+    <footer id="contact">
         <div class="footer-content">
-            <div class="footer-brand">
-                <h2>Libform.</h2>
-                <p>探索极简主义设计的边界，致力于为数字体验注入永恒的美学价值。</p>
+            <div class="footer-cta">
+                <p>Have a project in mind?</p>
+                <h2>Let's Create Together.</h2>
+                <a href="mailto:hello@linchen.design" class="email-link">hello@linchen.design</a>
             </div>
-            
-            <div class="footer-links">
-                <div class="link-group">
-                    <h4>探索</h4>
-                    <ul>
-                        <li><a href="#">最新作品</a></li>
-                        <li><a href="#">设计理念</a></li>
-                        <li><a href="#">服务流程</a></li>
-                    </ul>
-                </div>
-                <div class="link-group">
-                    <h4>社交</h4>
-                    <ul>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">Behance</a></li>
-                        <li><a href="#">Weibo</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
-        <div class="footer-bottom">
-            <span>&copy; 2025 LIBFORM Design. All Rights Reserved.</span>
-            <span>Privacy Policy | Terms of Use</span>
+            <div class="footer-bottom">
+                <span>&copy; 2025 Lin Chen.</span>
+                <div class="social-links">
+                    <a href="#">Weibo</a>
+                    <a href="#">Behance</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">Dribbble</a>
+                </div>
+            </div>
         </div>
     </footer>
 
