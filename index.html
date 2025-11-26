@@ -3,54 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life is a Playground</title>
+    <title>LIBFORM | 极简美学</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Noto+Serif+SC:wght@300;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     
     <style>
         /* ====================
-           变量定义
+           1. 变量定义 (方便你以后一键改色)
            ==================== */
         :root {
-            --bg-color: #050505;
-            --text-main: #ffffff;
-            --text-sub: #a0a0a0;
-            --font-en-heading: 'Playfair Display', serif; /* 英文标题 */
-            --font-zh-heading: 'Noto Serif SC', serif;    /* 中文标题 - 关键！ */
-            --font-body: 'Lato', sans-serif;
+            --bg-color: #050505;       /* 接近纯黑的背景 */
+            --text-main: #ffffff;      /* 主文字色 */
+            --text-sub: #a0a0a0;       /* 副文字色，灰色更有质感 */
+            --accent-color: #ffffff;   /* 强调色，极简风通常用白色或金色 */
+            --font-heading: 'Playfair Display', serif; /* 标题字体 */
+            --font-body: 'Lato', sans-serif;           /* 正文字体 */
+            --spacing-unit: 20px;
         }
 
         /* ====================
-           基础设置
+           2. 全局重置
            ==================== */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body, html {
             height: 100%;
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: var(--font-body);
-            overflow-x: hidden;
+            overflow-x: hidden; /* 禁止横向滚动 */
             scroll-behavior: smooth;
         }
 
         a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; }
 
         /* ====================
-           导航栏 (极简 - 无Logo版)
+           3. 导航栏 (极简悬浮)
            ==================== */
         nav {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             padding: 40px 60px;
             display: flex;
-            /* 改为 flex-end，因为左边的logo没了，让菜单靠右显得更平衡 */
-            justify-content: flex-end; 
+            justify-content: space-between;
             align-items: center;
             z-index: 100;
-            mix-blend-mode: difference;
+            mix-blend-mode: difference; /* 高级技巧：让文字根据背景自动反色 */
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .nav-links {
@@ -59,23 +73,32 @@
         }
 
         .nav-links a {
-            font-size: 0.8rem;
-            letter-spacing: 2px;
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            opacity: 0.6;
+            opacity: 0.7;
             position: relative;
-            font-weight: 300;
         }
 
-        .nav-links a:hover { opacity: 1; }
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        /* 链接下划线动画 */
         .nav-links a::after {
-            content: ''; position: absolute; width: 0; height: 1px;
-            bottom: -5px; left: 0; background-color: white; transition: width 0.3s;
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -5px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s;
         }
         .nav-links a:hover::after { width: 100%; }
 
         /* ====================
-           Hero 区域
+           4. 英雄区域 (Hero Section)
            ==================== */
         .hero {
             height: 100vh;
@@ -84,15 +107,16 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            /* 背景图：游乐场/摩天轮的抽象图，或者保留之前的黑白建筑图也很搭 */
-            background: url('https://images.unsplash.com/photo-1513279922550-250c2129b13a?q=80&w=2670&auto=format&fit=crop') no-repeat center center/cover;
+            /* 背景图：这里放了一张更抽象、建筑感的黑白图 */
+            background: url('https://images.unsplash.com/photo-1492571350019-22de08371fd3?q=80&w=2553&auto=format&fit=crop') no-repeat center center/cover;
         }
 
-        /* 遮罩加深一点，让白色文字更突出 */
+        /* 遮罩层：让文字更清晰，且增加深邃感 */
         .hero::before {
-            content: ''; position: absolute;
+            content: '';
+            position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4); /* 40%透明度的黑 */
             z-index: 1;
         }
 
@@ -100,103 +124,125 @@
             position: relative;
             z-index: 2;
             text-align: center;
-            max-width: 900px;
+            max-width: 800px;
             padding: 0 20px;
         }
 
-        /* 小标签 */
+        /* 极简风的小标签 */
         .tagline {
-            font-family: var(--font-en-heading);
-            font-size: 1rem;
-            letter-spacing: 4px;
-            font-style: italic;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 30px;
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            margin-bottom: 20px;
             display: block;
             animation: fadeInDown 1.5s ease;
         }
 
-        /* 中文大标题样式 */
+        /* 核心大标题 */
         h1 {
-            font-family: var(--font-zh-heading); /* 使用宋体 */
-            font-size: clamp(2.5rem, 6vw, 5rem);
-            line-height: 1.4;
-            font-weight: 300; /* 细字体显贵 */
-            letter-spacing: 0.2em; /* 字间距拉大，这是高级感的秘诀 */
-            margin-bottom: 50px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem); /* 响应式字体大小 */
+            line-height: 1.1;
+            margin-bottom: 40px;
+            font-weight: 400; /* 细体更有高级感 */
+            font-style: italic; /* 斜体增加艺术感 */
             animation: fadeInUp 1.5s ease;
         }
+        
+        h1 span {
+            font-style: normal; /* 部分文字不斜体，制造反差 */
+            display: block;
+            font-size: 0.6em; /* 第二行稍微小一点 */
+            margin-top: 10px;
+        }
 
-        /* 按钮 */
+        /* 高级感按钮 - 边框型 */
         .btn-minimal {
             display: inline-block;
-            padding: 12px 40px;
-            border: 1px solid rgba(255,255,255,0.4);
+            padding: 15px 50px;
+            border: 1px solid rgba(255,255,255,0.3);
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             letter-spacing: 3px;
             text-transform: uppercase;
             transition: all 0.4s ease;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(5px); /* 毛玻璃效果 */
             animation: fadeInUp 2s ease;
-            border-radius: 50px; /* 稍微加点圆角，更柔和，像游乐场的票根 */
+            margin-top: 20px;
         }
 
         .btn-minimal:hover {
             background-color: white;
             color: black;
             border-color: white;
-            transform: translateY(-2px);
         }
 
         /* ====================
-           下部内容区
+           5. 内容展示区 (预留框架)
            ==================== */
         .content-section {
-            padding: 120px 60px;
+            padding: 100px 60px;
             background-color: var(--bg-color);
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 80px; /* 间距加大，更空旷 */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 自适应列 */
+            gap: 60px;
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        .card { display: flex; flex-direction: column; gap: 25px; cursor: pointer; }
-        .card-img {
-            width: 100%; height: 450px;
-            background-color: #222;
-            object-fit: cover;
-            filter: grayscale(100%) contrast(1.2); /* 黑白且高对比度 */
-            transition: filter 0.6s ease, transform 0.6s ease;
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
+
+        .card-img {
+            width: 100%;
+            height: 400px;
+            background-color: #1a1a1a;
+            object-fit: cover;
+            filter: grayscale(100%); /* 图片黑白化，鼠标放上去变彩色，很高级 */
+            transition: filter 0.5s ease;
+        }
+
         .card:hover .card-img {
             filter: grayscale(0%);
-            transform: scale(1.02); /* 微缩放 */
         }
+
         .card-title {
-            font-family: var(--font-zh-heading);
-            font-size: 1.4rem;
-            font-weight: 300;
-            letter-spacing: 2px;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 400;
         }
+
         .card-desc {
-            font-size: 0.9rem; color: var(--text-sub);
-            line-height: 1.8; letter-spacing: 1px;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-weight: 300;
         }
 
-        /* 动画 */
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        /* ====================
+           6. 动画关键帧
+           ==================== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* 移动端 */
+        /* 移动端适配 */
         @media (max-width: 768px) {
-            nav { justify-content: center; padding: 20px; } /* 移动端菜单居中 */
-            h1 { letter-spacing: 0.1em; margin-bottom: 30px; }
+            nav { padding: 20px; }
+            .nav-links { display: none; } /* 移动端简单处理：隐藏菜单 */
+            h1 { font-size: 3rem; }
             .grid-container { gap: 40px; }
         }
     </style>
@@ -204,6 +250,7 @@
 <body>
 
     <nav>
+        <div class="logo">Libform.</div>
         <div class="nav-links">
             <a href="#">Works</a>
             <a href="#">About</a>
@@ -214,11 +261,14 @@
 
     <div class="hero">
         <div class="hero-content">
-            <span class="tagline">Welcome to the game</span>
+            <span class="tagline">Est. 2025</span>
             
-            <h1>人生就是游乐场</h1>
+            <h1>
+                The Art of <br>
+                <span>CONTRAST & FREEDOM</span>
+            </h1>
 
-            <a href="#gallery" class="btn-minimal">Enter</a>
+            <a href="#gallery" class="btn-minimal">Discover</a>
         </div>
     </div>
 
@@ -226,21 +276,21 @@
         <div class="grid-container">
             
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?q=80&w=2680&auto=format&fit=crop" class="card-img" alt="Carousel">
-                <h3 class="card-title">旋转木马</h3>
-                <p class="card-desc">我们在原地打转，却以为在奔向远方。</p>
+                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 1">
+                <h3 class="card-title">Minimalism</h3>
+                <p class="card-desc">剥离一切不必要的元素，只保留最核心的表达。</p>
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1605218427360-120930d075eb?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Rollercoaster">
-                <h3 class="card-title">过山车</h3>
-                <p class="card-desc">失重的瞬间，才是活着的最真实体验。</p>
+                <img src="https://images.unsplash.com/photo-1507643179173-442f8504099b?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 2">
+                <h3 class="card-title">Structure</h3>
+                <p class="card-desc">在混乱中建立秩序s，在秩序中寻找自由。</p>
             </div>
 
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1495573468533-6a2d989f6608?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Maze">
-                <h3 class="card-title">迷宫</h3>
-                <p class="card-desc">出口并不重要，重要的是寻找的过程。</p>
+                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 3">
+                <h3 class="card-title">Silence</h3>
+                <p class="card-desc">此处无声胜有声，留白是最高级的语言。</p>
             </div>
 
         </div>
