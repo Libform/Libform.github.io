@@ -3,316 +3,407 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D 视觉主页 | 林晨</title>
+    <title>我的成长花园 | 个人主页</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;500;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
     <style>
-        /* ====================
-           1. 极简变量 (保留你的风格)
-           ==================== */
         :root {
-            --bg-color: #f9f9f9; 
-            --text-main: #222222; 
-            --text-sub: #666666; 
-            
-            --font-heading: 'Playfair Display', 'Noto Serif SC', serif;
-            --font-body: 'Inter', 'Noto Serif SC', sans-serif;
-            
-            --container-width: 1200px;
+            --bg-color: #f0f4f8;
+            --soil-color: #8d6e63;
+            --tree-trunk: #5d4037;
+            --leaf-color: #66bb6a;
+            --leaf-dark: #43a047;
+            --accent-color: #ff7043; /* 果实颜色 */
         }
 
-        /* ====================
-           2. 基础重置
-           ==================== */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-body);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden; /* 防止滑动时出现横向滚动条 */
-        }
-
-        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
-        a:hover { opacity: 0.6; }
-
-        /* ====================
-           3. 导航栏
-           ==================== */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 30px 60px;
+            font-family: 'Nunito', 'Noto Serif SC', sans-serif;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(249, 249, 249, 0.8);
-            backdrop-filter: blur(12px);
-            z-index: 100;
-        }
-
-        .logo { font-weight: 600; font-size: 1.2rem; letter-spacing: -0.5px; }
-        .nav-links { display: flex; gap: 40px; }
-        .nav-links a { font-size: 0.9rem; color: var(--text-sub); font-weight: 500; }
-        .nav-links a.active { color: var(--text-main); }
-
-        /* ====================
-           4. 头部介绍
-           ==================== */
-        header.hero {
-            padding: 180px 60px 60px;
-            max-width: var(--container-width);
-            margin: 0 auto;
-            text-align: center; /* 配合3D展示，改为居中对齐更好看 */
-        }
-
-        h1.hero-title {
-            font-family: var(--font-heading);
-            font-size: clamp(3rem, 5vw, 4.5rem);
-            font-weight: 400;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            color: #111;
-        }
-
-        p.hero-intro {
-            font-size: 1.1rem;
-            color: var(--text-sub);
-            max-width: 600px;
-            margin: 0 auto 60px;
-            font-weight: 300;
-        }
-
-        /* ====================
-           5. 3D Cover Flow 核心区域
-           ==================== */
-        .swiper-container-wrapper {
-            width: 100%;
-            padding-bottom: 100px;
+            justify-content: center;
+            align-items: flex-end;
             position: relative;
         }
 
-        .swiper {
-            width: 100%;
-            padding-top: 50px;
-            padding-bottom: 50px;
-        }
-
-        .swiper-slide {
-            background-position: center;
-            background-size: cover;
-            width: 300px; /* 卡片宽度 */
-            height: 400px; /* 卡片高度 */
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15); /* 高级感的投影 */
-            overflow: hidden;
-            /* 保持图片比例 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #fff;
-            transition: all 0.3s;
-        }
-
-        .swiper-slide img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none; /* 防止拖拽图片 */
-        }
-
-        /* 倒影效果 (可选，增加高级感) */
-        .swiper-slide-shadow-left,
-        .swiper-slide-shadow-right {
-            border-radius: 20px; 
-        }
-
-        /* 底部标题互动 */
-        .active-title {
+        /* --- UI 控件区域 --- */
+        .ui-controls {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
-            margin-top: 20px;
-            height: 50px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-        .active-title.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .active-title h3 {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-        .active-title span {
-            color: var(--text-sub);
-            font-size: 0.9rem;
+            z-index: 100;
+            transition: opacity 0.5s;
         }
 
-        /* ====================
-           6. 极简底栏
-           ==================== */
-        footer {
-            padding: 80px 60px;
-            border-top: 1px solid #eaeaea;
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .water-btn {
+            background: #29b6f6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(41, 182, 246, 0.4);
+            transition: transform 0.2s, background 0.3s;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            background-color: white;
-            max-width: var(--container-width);
+            align-items: center;
+            gap: 10px;
             margin: 0 auto;
         }
 
-        .contact-big {
-            font-family: var(--font-heading);
-            font-size: 2rem;
-            color: var(--text-main);
+        .water-btn:hover { transform: scale(1.05); background: #039be5; }
+        .water-btn:active { transform: scale(0.95); }
+        .water-btn.disabled { opacity: 0; pointer-events: none; }
+
+        /* --- 树的容器 --- */
+        .garden-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 50px; /* 地面高度 */
         }
 
-        /* ====================
-           移动端适配
-           ==================== */
-        @media (max-width: 768px) {
-            nav { padding: 20px; }
-            header.hero { padding: 120px 20px 40px; }
-            .swiper-slide { width: 240px; height: 320px; }
-            footer { flex-direction: column; align-items: flex-start; gap: 30px; padding: 40px 20px; }
+        /* 地面 */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: #e0e0e0;
+            border-top: 1px solid #dcdcdc;
+            z-index: 1;
         }
+
+        /* 树干 (SVG 绘制) */
+        .tree {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            z-index: 2;
+            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: bottom center;
+            transform: scale(0.2); /* 初始状态：小树苗 */
+        }
+
+        .trunk {
+            fill: var(--tree-trunk);
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 树叶组 */
+        .leaves {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s 0.5s;
+        }
+
+        .tree.grown {
+            transform: scale(1); /* 长大状态 */
+        }
+        .tree.grown .leaves {
+            opacity: 1;
+        }
+
+        /* --- 果实 (也是按钮) --- */
+        .fruit {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 3;
+            transform: scale(0); /* 初始不可见 */
+            transition: transform 0.5s;
+        }
+
+        /* 果实上面的叶子装饰 */
+        .fruit::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            width: 20px;
+            height: 10px;
+            background: var(--leaf-dark);
+            border-radius: 10px 0 10px 0;
+        }
+
+        /* 果实位置 */
+        .f1 { top: 120px; left: 80px; transition-delay: 1.6s; }
+        .f2 { top: 80px; left: 200px; transition-delay: 1.8s; }
+        .f3 { top: 150px; left: 300px; transition-delay: 2.0s; }
+
+        /* 长出果实 */
+        .tree.bloomed .fruit {
+            transform: scale(1);
+        }
+
+        /* 掉落动画 */
+        @keyframes dropToGround {
+            0% { top: var(--start-top); transform: rotate(0deg); }
+            60% { top: 460px; transform: rotate(10deg); } /* 撞击地面 */
+            70% { top: 440px; transform: rotate(-5deg); } /* 弹跳 */
+            100% { top: 460px; transform: rotate(0deg); } /* 停在地面 */
+        }
+
+        .fruit.dropped {
+            animation: dropToGround 1s forwards cubic-bezier(0.6, 0.04, 0.98, 0.335);
+            /* 掉落后变成可交互的按钮状态 */
+            cursor: pointer;
+        }
+        
+        .fruit.dropped:hover {
+            transform: scale(1.1) translateY(-5px);
+            background: #ff8a65;
+        }
+
+        /* --- 弹窗卡片 --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .modal-overlay.active .card {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .card h2 { margin-bottom: 15px; color: var(--tree-trunk); }
+        .card p { color: #666; line-height: 1.8; margin-bottom: 20px; }
+        .card-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        
+        /* 浇水动画特效 */
+        .water-drop {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #29b6f6;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">SioFU_AI.</div>
-        <div class="nav-links">
-            <a href="#" class="active">Work</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-        </div>
-    </nav>
+    <div class="ui-controls" id="uiControls">
+        <h1>你好，我是 [你的名字]</h1>
+        <p style="color:#666; margin-bottom: 20px;">这里是一颗充满可能性的种子。</p>
+        <button class="water-btn" onclick="growTree()">
+            <span>💧</span> 给它浇水
+        </button>
+    </div>
 
-    <header class="hero">
-        <h1 class="hero-title">
-            Designing the <br>Future of Interfaces
-        </h1>
-        <p class="hero-intro">
-            融合艺术与代码，创造具有生命力的数字体验。<br>
-            左右滑动下方卡片，探索我的设计世界。
-        </p>
-    </header>
-
-    <section class="swiper-container-wrapper">
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" data-title="Aesop Store" data-desc="Space & Identity">
-                    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800" />
-                </div>
-                <div class="swiper-slide" data-title="Urban Architecture" data-desc="Photography">
-                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" />
-                </div>
-                <div class="swiper-slide" data-title="Ocean Breeze" data-desc="Mood Visuals">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800" />
-                </div>
-                <div class="swiper-slide" data-title="Desert Vibes" data-desc="Color Study">
-                    <img src="https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&q=80&w=800" />
-                </div>
-                <div class="swiper-slide" data-title="Forest Mist" data-desc="Nature Concept">
-                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800" />
-                </div>
-                <div class="swiper-slide" data-title="Modern Interior" data-desc="Space Design">
-                    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=800" />
-                </div>
-            </div>
+    <div class="garden-container">
+        <div class="tree" id="myTree">
+            <svg class="trunk" viewBox="0 0 200 300" preserveAspectRatio="none">
+                <path d="M90,300 Q80,200 60,150 Q40,100 20,80" fill="none" stroke="#5d4037" stroke-width="15" stroke-linecap="round"/>
+                <path d="M110,300 Q120,200 140,150 Q160,100 180,80" fill="none" stroke="#5d4037" stroke-width="15" stroke-linecap="round"/>
+                <path d="M100,300 L100,100" fill="none" stroke="#5d4037" stroke-width="20" stroke-linecap="round"/>
+            </svg>
+            
+            <div class="leaves">
+                <div style="position:absolute; top:20px; left:0px; width:120px; height:120px; background:#66bb6a; border-radius:50%; opacity:0.8;"></div>
+                <div style="position:absolute; top:-20px; left:80px; width:150px; height:150px; background:#43a047; border-radius:50%; opacity:0.9;"></div>
+                <div style="position:absolute; top:30px; left:140px; width:110px; height:110px; background:#81c784; border-radius:50%; opacity:0.8;"></div>
             </div>
 
-        <div class="active-title" id="slideTitle">
-            <h3 id="workTitle">Loading...</h3>
-            <span id="workDesc">Loading...</span>
+            <div class="fruit f1" onclick="openModal('about')" style="--start-top: 120px;">
+                经历
+            </div>
+            <div class="fruit f2" onclick="openModal('skills')" style="--start-top: 80px;">
+                技能
+            </div>
+            <div class="fruit f3" onclick="openModal('contact')" style="--start-top: 150px;">
+                联系
+            </div>
         </div>
-    </section>
 
-    <footer>
-        <div>
-            <a href="mailto:hello@siofu.design" class="contact-big">hello@siofu.design</a>
-        </div>
-        <div class="footer-info">
-            © 2025 SioFU_AI Design
-        </div>
-    </footer>
+        <div class="ground"></div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="card" id="card-about" style="display:none;">
+            <span class="close-btn" onclick="forceClose()">×</span>
+            <span class="card-icon">📖</span>
+            <h2>我的经历</h2>
+            <p>这里可以写你的个人简介。</p>
+            <p>例如：我有5年的UI设计经验，曾参与过某某APP的从0到1开发，热衷于探索人机交互的新边界。</p>
+        </div>
+
+        <div class="card" id="card-skills" style="display:none;">
+            <span class="close-btn" onclick="forceClose()">×</span>
+            <span class="card-icon">🎨</span>
+            <h2>核心技能</h2>
+            <p>Figma, Sketch, Adobe Creative Suite</p>
+            <p>HTML/CSS 基础, Three.js 探索</p>
+            <p>用户体验研究 & 交互原型设计</p>
+        </div>
+
+        <div class="card" id="card-contact" style="display:none;">
+            <span class="close-btn" onclick="forceClose()">×</span>
+            <span class="card-icon">📬</span>
+            <h2>联系我</h2>
+            <p>期待与您合作创造有趣的项目。</p>
+            <a href="mailto:yourname@example.com" style="color: #29b6f6; font-weight: bold; text-decoration: none;">yourname@example.com</a>
+        </div>
+    </div>
 
     <script>
-        // 初始化 Swiper
-        var swiper = new Swiper(".mySwiper", {
-            effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
-            slidesPerView: "auto", // 自动根据图片宽度调整数量
-            initialSlide: 2, // 默认选中第3张
-            loop: true, // 无限循环
-            speed: 600, // 切换速度
-            
-            // 核心3D参数配置（模仿 ElevenLabs 效果）
-            coverflowEffect: {
-                rotate: 0,      // 旋转角度 (0度更现代，像视频里那样)
-                stretch: 0,     // 拉伸
-                depth: 300,     // 深度 (值越大，透视感越强)
-                modifier: 1,    // 修正值
-                slideShadows: false, // 去掉默认阴影，用CSS自己写的更好看
-                scale: 0.8,     // 非激活状态的图片缩小比例
-            },
-            
-            // 监听切换事件，更新底部的文字
-            on: {
-                slideChange: function () {
-                    updateTitle(this.realIndex);
-                },
-                init: function() {
-                    // 初始化时也更新一次
-                    setTimeout(() => {
-                        updateTitle(this.realIndex);
-                    }, 100);
-                }
-            }
-        });
+        let step = 0;
+        const tree = document.getElementById('myTree');
+        const btn = document.querySelector('.water-btn');
+        const uiText = document.querySelector('.ui-controls h1');
 
-        // 更新底部标题的逻辑
-        function updateTitle(realIndex) {
-            const titleBox = document.getElementById('slideTitle');
-            const titleEl = document.getElementById('workTitle');
-            const descEl = document.getElementById('workDesc');
-            
-            // 获取当前所有 slide（因为 loop 模式会复制 slide，所以要特别处理）
-            // 这里我们直接通过 realIndex 找对应的原始数据
-            // 简单的方法是获取当前激活的 slide DOM 元素
-            const activeSlide = swiper.slides[swiper.activeIndex];
-            
-            if(activeSlide) {
-                // 简单的动画效果
-                titleBox.classList.remove('show');
+        function growTree() {
+            if(step === 0) {
+                // 第一步：浇水动画 & 长大
+                createWaterDrops();
                 
                 setTimeout(() => {
-                    const title = activeSlide.getAttribute('data-title');
-                    const desc = activeSlide.getAttribute('data-desc');
-                    
-                    titleEl.innerText = title;
-                    descEl.innerText = desc;
-                    
-                    titleBox.classList.add('show');
-                }, 200);
+                    tree.classList.add('grown'); // 树变大
+                    btn.innerHTML = '<span>☀️</span> 促进开花'; // 改变按钮文案
+                    uiText.innerText = "它正在茁壮成长...";
+                    step++;
+                }, 500);
+            } 
+            else if (step === 1) {
+                // 第二步：开花结果
+                tree.classList.add('bloomed'); // 果实出现
+                btn.innerHTML = '<span>🍎</span> 收获果实';
+                uiText.innerText = "看！它结果了！";
+                step++;
             }
+            else if (step === 2) {
+                // 第三步：果实掉落
+                const fruits = document.querySelectorAll('.fruit');
+                
+                uiText.innerText = "点击地上的果实看看吧";
+                btn.classList.add('disabled'); // 隐藏按钮
+
+                // 依次掉落
+                fruits.forEach((f, index) => {
+                    setTimeout(() => {
+                        f.classList.add('dropped');
+                    }, index * 300);
+                });
+                step++;
+            }
+        }
+
+        // 简单的粒子特效：生成水滴
+        function createWaterDrops() {
+            const btnRect = btn.getBoundingClientRect();
+            for(let i=0; i<10; i++) {
+                let drop = document.createElement('div');
+                drop.classList.add('water-drop');
+                document.body.appendChild(drop);
+                
+                let startX = btnRect.left + btnRect.width/2;
+                let startY = btnRect.top;
+
+                drop.style.left = startX + 'px';
+                drop.style.top = startY + 'px';
+
+                // 随机洒落
+                let randomX = (Math.random() - 0.5) * 100;
+                
+                drop.animate([
+                    { transform: `translate(0, 0)`, opacity: 1 },
+                    { transform: `translate(${randomX}px, 200px)`, opacity: 0 }
+                ], {
+                    duration: 800,
+                    easing: 'ease-in'
+                }).onfinish = () => drop.remove();
+            }
+        }
+
+        // 弹窗逻辑
+        const overlay = document.getElementById('modalOverlay');
+        const cards = document.querySelectorAll('.card');
+
+        function openModal(type) {
+            // 只有掉落后才能点击 (通过检测class)
+            const fruit = document.querySelector('.fruit.dropped');
+            if(!fruit && step < 3) return; 
+
+            // 隐藏所有卡片
+            cards.forEach(c => c.style.display = 'none');
+            // 显示对应卡片
+            document.getElementById('card-' + type).style.display = 'block';
+            overlay.classList.add('active');
+        }
+
+        function closeModal(e) {
+            if(e.target === overlay) {
+                overlay.classList.remove('active');
+            }
+        }
+        
+        function forceClose() {
+             overlay.classList.remove('active');
         }
     </script>
 </body>
