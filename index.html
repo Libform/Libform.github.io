@@ -3,262 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIBFORM | 构筑 · 光影</title>
+    <title>LIBFORM | 自由</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Noto+Serif+SC:wght@300;400;500&family=Manrope:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400&family=Noto+Serif+SC:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     
     <style>
         /* ====================
            1. 变量定义
            ==================== */
         :root {
-            --bg-color: #F8F8F6; /* 极浅的米灰底色 */
-            --text-primary: #1A1A1A; 
-            --text-secondary: #666666;
-            --line-color: #E5E5E5;
-
-            --font-display: 'Italiana', serif;
-            --font-cn: 'Noto Serif SC', serif;
-            --font-body: 'Manrope', sans-serif;
+            --bg-color: #050505;
+            --text-main: #ffffff;
+            --text-sub: #a0a0a0;
+            --accent-color: #ffffff;
+            /* 字体栈更新：优先使用思源宋体/黑体 */
+            --font-heading: 'Playfair Display', 'Noto Serif SC', serif; 
+            --font-body: 'Lato', 'Noto Sans SC', sans-serif;
+            --spacing-unit: 20px;
         }
 
         /* ====================
-           2. 基础重置
+           2. 全局重置
            ==================== */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        body {
+        body, html {
+            height: 100%;
             background-color: var(--bg-color);
-            color: var(--text-primary);
+            color: var(--text-main);
             font-family: var(--font-body);
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
         }
-        a { text-decoration: none; color: inherit; }
+
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; }
 
         /* ====================
-           3. 导航栏 (透明悬浮)
+           3. 导航栏
            ==================== */
         nav {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
-            padding: 30px 50px;
+            padding: 40px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            /* 稍微加一点点背景模糊，提升质感 */
-            backdrop-filter: blur(5px); 
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            mix-blend-mode: difference;
         }
 
         .logo {
-            font-family: var(--font-display);
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            color: var(--text-primary);
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
             font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
         }
 
         .nav-links a {
-            margin-left: 40px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
+            font-size: 0.9rem; /*稍微调大一点中文 */
             letter-spacing: 2px;
-            color: var(--text-primary);
-            font-weight: 500;
+            text-transform: uppercase;
+            opacity: 0.7;
             position: relative;
+            font-weight: 300;
         }
-        /* 链接下划线动画 */
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
         .nav-links a::after {
-            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px; background: #000; transition: width 0.3s;
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -5px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s;
         }
         .nav-links a:hover::after { width: 100%; }
 
-
         /* ====================
-           4. Hero 区域 (核心修改：加入背景图和遮罩)
+           4. 英雄区域 (Hero)
            ==================== */
         .hero {
-            height: 95vh; /* 稍微拉高一点，更有气势 */
+            height: 100vh;
             width: 100%;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
+            justify-content: center;
             position: relative;
-            padding: 0 20px;
-
-            /* --- 核心背景修改 Start --- */
-            /* 这里使用了两个图层：
-               1. linear-gradient: 一个半透明的乳白色渐变遮罩 (rgba(248, 248, 246, 0.85))。
-                  它让底图变淡，保证文字清晰，同时营造出一种“空气感”。
-               2. url(...): 底部的背景图，选了一张明亮、抽象的建筑光影图。
-            */
-            background: linear-gradient(
-                to bottom,
-                rgba(248, 248, 246, 0.8), 
-                rgba(248, 248, 246, 0.95)
-            ), url('https://images.unsplash.com/photo-1512521989366-0292f36e0b7f?q=80&w=2667&auto=format&fit=crop') no-repeat center center/cover;
-            /* --- 核心背景修改 End --- */
-            
-            /* 给背景加一点极其缓慢的移动，增加生命力 */
-            animation: bgMove 30s infinite alternate ease-in-out;
+            background: url('https://images.unsplash.com/photo-1492571350019-22de08371fd3?q=80&w=2553&auto=format&fit=crop') no-repeat center center/cover;
         }
 
-        @keyframes bgMove {
-            from { background-position: center center; }
-            to { background-position: center 10%; }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1;
         }
 
         .hero-content {
+            position: relative;
             z-index: 2;
-            animation: fadeInUp 1.2s ease-out;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
         }
 
-        .hero-label {
+        .tagline {
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            margin-bottom: 20px;
             display: block;
-            font-family: var(--font-display);
-            font-size: 1rem;
-            letter-spacing: 5px;
-            margin-bottom: 30px;
-            color: var(--text-secondary);
+            animation: fadeInDown 1.5s ease;
         }
 
-        .hero h1 {
-            font-family: var(--font-cn);
-            font-weight: 300;
-            color: var(--text-primary);
-            line-height: 1.3;
-        }
-
-        .main-title {
-            font-size: clamp(3rem, 7vw, 5rem);
-            display: block;
-            letter-spacing: 10px;
-            margin-bottom: 15px;
-            text-shadow: 0 20px 40px rgba(0,0,0,0.05); /* 极淡的文字阴影增加立体感 */
+        h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.2;
+            margin-bottom: 40px;
+            font-weight: 400;
+            /* 中文不必强制斜体，宋体本身就很美，这里取消 italic */
+            font-style: normal; 
+            animation: fadeInUp 1.5s ease;
         }
         
-        .sub-title {
-            font-size: 1.1rem;
-            font-family: var(--font-display);
-            color: var(--text-secondary);
+        h1 span {
+            display: block;
+            font-size: 0.5em; /* 副标题小一点 */
+            margin-top: 15px;
+            letter-spacing: 10px; /* 增加字间距营造呼吸感 */
+            font-weight: 300;
+        }
+
+        .btn-minimal {
+            display: inline-block;
+            padding: 15px 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            font-size: 0.9rem;
             letter-spacing: 4px;
             text-transform: uppercase;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 2s ease;
+            margin-top: 20px;
+            font-family: var(--font-body);
         }
 
-        /* 向下滚动的提示标记 */
-        .scroll-down {
-            position: absolute;
-            bottom: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            opacity: 0.6;
-            animation: bounce 2s infinite;
+        .btn-minimal:hover {
+            background-color: white;
+            color: black;
+            border-color: white;
         }
-        .scroll-line { width: 1px; height: 50px; background: #000; }
-        .scroll-text { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;}
-
 
         /* ====================
-           5. 画廊区域 (保持黑白变彩色交互)
+           5. 内容展示区
            ==================== */
         .content-section {
-            background-color: var(--bg-color); /* 确保内容区背景纯净 */
-            padding: 120px 40px;
-            position: relative;
-            z-index: 10;
+            padding: 120px 60px; /* 增加上下间距 */
+            background-color: var(--bg-color);
         }
 
-        .gallery-container {
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px;
             max-width: 1400px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            cursor: pointer; /* 增加手型 */
+        }
+
+        .card-img {
+            width: 100%;
+            height: 400px;
+            background-color: #1a1a1a;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: all 0.6s ease; /* 变慢一点更优雅 */
+        }
+
+        .card:hover .card-img {
+            filter: grayscale(0%);
+            transform: scale(1.02); /* 微弱的放大效果 */
+        }
+
+        .card-title {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .card-desc {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            line-height: 1.8; /* 增加行高 */
+            font-weight: 300;
+            text-align: justify; /* 两端对齐 */
+        }
+
+        /* ====================
+           New: 6. 底部栏 (Footer)
+           ==================== */
+        footer {
+            background-color: #080808; /* 比背景稍浅一点的黑 */
+            padding: 80px 60px 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-family: var(--font-body);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .footer-brand h2 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .footer-brand p {
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
             gap: 60px;
         }
 
-        /* 错落布局 */
-        .gallery-item:nth-child(2) { margin-top: 140px; }
-        .gallery-item:nth-child(3) { margin-top: 40px; }
-
-        .gallery-item {
-            cursor: pointer;
-            position: relative;
+        .link-group h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            opacity: 0.5;
         }
 
-        .image-box {
-            width: 100%;
-            /* 强制竖屏比例 3:4 */
-            aspect-ratio: 3 / 4; 
-            overflow: hidden;
-            background: #eee;
-            position: relative;
+        .link-group ul li {
+            margin-bottom: 12px;
         }
 
-        .image-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            /* --- 核心交互：默认黑白 --- */
-            filter: grayscale(100%) brightness(0.95);
-            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1); /* 使用更高级的缓动曲线 */
+        .link-group ul li a {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            transition: color 0.3s;
         }
 
-        /* --- 核心交互：悬停变彩并放大 --- */
-        .gallery-item:hover .image-box img {
-            filter: grayscale(0%) brightness(1);
-            transform: scale(1.06);
+        .link-group ul li a:hover {
+            color: white;
         }
 
-        .item-info {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid var(--line-color);
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 60px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            transition: border-color 0.5s;
-        }
-        .gallery-item:hover .item-info { border-color: #999; }
-
-        .item-title {
-            font-family: var(--font-cn);
-            font-size: 1.3rem;
-            font-weight: 400;
-        }
-
-        .item-meta {
-            font-family: var(--font-display);
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-style: italic;
+            color: #555;
+            font-size: 0.75rem;
         }
 
         /* ====================
-           6. 动画与适配
+           7. 动画关键帧
            ==================== */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-10px);}
-            60% {transform: translateY(-5px);}
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 900px) {
-            .gallery-container { grid-template-columns: 1fr; gap: 80px; }
-            .gallery-item:nth-child(n) { margin-top: 0; } /* 取消移动端错落 */
-            .nav-links { display: none; }
-            .main-title { font-size: 3.5rem; letter-spacing: 5px; }
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            nav { padding: 20px; }
+            .nav-links { display: none; } 
+            h1 { font-size: 3rem; }
+            .grid-container { gap: 40px; }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+            .footer-links {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -267,62 +340,82 @@
     <nav>
         <div class="logo">Libform.</div>
         <div class="nav-links">
-            <a href="#">Projects</a>
-            <a href="#">Studio</a>
-            <a href="#">News</a>
+            <a href="#">作品系列</a>
+            <a href="#">关于我们</a>
+            <a href="#">设计志</a>
+            <a href="#">联系</a>
         </div>
     </nav>
 
     <div class="hero">
         <div class="hero-content">
-            <span class="hero-label">Architectural Essence</span>
+            <span class="tagline">Est. 2025</span>
+            
             <h1>
-                <span class="main-title">构筑 · 光影</span>
-                <span class="sub-title">The Dialogue of Space and Light</span>
+                冲突与自由<br>
+                <span>的艺术哲学</span>
             </h1>
-        </div>
 
-        <div class="scroll-down">
-            <div class="scroll-text">Scroll</div>
-            <div class="scroll-line"></div>
+            <a href="#gallery" class="btn-minimal">即刻探索</a>
         </div>
     </div>
 
-    <section class="content-section">
-        <div class="gallery-container">
+    <section id="gallery" class="content-section">
+        <div class="grid-container">
             
-            <div class="gallery-item">
-                <div class="image-box">
-                    <img src="https://images.unsplash.com/photo-1597383441288-53a111e35e69?q=80&w=2670&auto=format&fit=crop" alt="Project 1">
-                </div>
-                <div class="item-info">
-                    <span class="item-title">静谧回廊</span>
-                    <span class="item-meta">Milan, 2024</span>
-                </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 1">
+                <h3 class="card-title">极简主义</h3>
+                <p class="card-desc">摒弃繁复的修饰，剥离一切不必要的元素，只保留最核心的情感表达。少，即是万物。</p>
             </div>
 
-            <div class="gallery-item">
-                <div class="image-box">
-                    <img src="https://images.unsplash.com/photo-1520699918507-3c3e05c46b0c?q=80&w=2652&auto=format&fit=crop" alt="Project 2">
-                </div>
-                <div class="item-info">
-                    <span class="item-title">混凝土诗学</span>
-                    <span class="item-meta">Tokyo, 2023</span>
-                </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1507643179173-442f8504099b?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 2">
+                <h3 class="card-title">结构美学</h3>
+                <p class="card-desc">在混乱中建立秩序，在几何的严谨与光影的流动中，寻找一种理性的浪漫。</p>
             </div>
 
-            <div class="gallery-item">
-                <div class="image-box">
-                    <img src="https://images.unsplash.com/photo-1493329025335-18542a61595f?q=80&w=2674&auto=format&fit=crop" alt="Project 3">
-                </div>
-                <div class="item-info">
-                    <span class="item-title">海边自宅</span>
-                    <span class="item-meta">Copenhagen, 2025</span>
-                </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2670&auto=format&fit=crop" class="card-img" alt="Project 3">
+                <h3 class="card-title">静谧留白</h3>
+                <p class="card-desc">此处无声胜有声。留白不仅是空间的让渡，更是想象力的延伸，是最高级的语言。</p>
             </div>
 
         </div>
     </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>Libform.</h2>
+                <p>探索极简主义设计的边界，致力于为数字体验注入永恒的美学价值。</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>探索</h4>
+                    <ul>
+                        <li><a href="#">最新作品</a></li>
+                        <li><a href="#">设计理念</a></li>
+                        <li><a href="#">服务流程</a></li>
+                    </ul>
+                </div>
+                <div class="link-group">
+                    <h4>社交</h4>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Behance</a></li>
+                        <li><a href="#">Weibo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>&copy; 2025 LIBFORM Design. All Rights Reserved.</span>
+            <span>Privacy Policy | Terms of Use</span>
+        </div>
+    </footer>
 
 </body>
 </html>
