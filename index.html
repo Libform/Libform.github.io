@@ -10,7 +10,7 @@
     <style>
         :root {
             --primary-color: #ffffff;
-            --transition-curve: cubic-bezier(0.22, 1, 0.36, 1); /* 丝滑的贝塞尔曲线 */
+            --transition-curve: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         * {
@@ -28,7 +28,6 @@
             color: #fff;
         }
 
-        /* --- 1. 背景层 --- */
         .bg-container {
             position: absolute;
             top: 0;
@@ -45,7 +44,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            transition: opacity 1s ease-in-out, transform 7s ease; /* 更慢的缩放，更具呼吸感 */
+            transition: opacity 1s ease-in-out, transform 7s ease;
             opacity: 0;
             transform: scale(1.15);
         }
@@ -55,37 +54,34 @@
             transform: scale(1);
         }
 
-        /* 电影感遮罩：左黑右透，保证左侧文字清晰 */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 100%);
+            background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.2) 100%);
             z-index: 2;
         }
 
-        /* --- 2. 主布局 --- */
         .main-container {
             position: relative;
             z-index: 10;
             width: 100%;
             height: 100%;
             display: grid;
-            grid-template-columns: 1.2fr 1fr; /* 左侧文字区稍微宽一点 */
+            grid-template-columns: 1.2fr 1fr;
             padding: 0 8vw;
             align-items: center;
         }
 
-        /* --- 左侧文字区 --- */
         .text-content {
             padding-right: 60px;
         }
 
         .text-content h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 5rem; /* 超大标题 */
+            font-size: 5rem;
             line-height: 1;
             font-weight: 700;
             margin-bottom: 30px;
@@ -104,7 +100,7 @@
             transform: translateY(30px);
             max-width: 85%;
             font-weight: 300;
-            border-left: 2px solid rgba(255,255,255,0.3); /* 左侧装饰线 */
+            border-left: 2px solid rgba(255,255,255,0.3);
             padding-left: 20px;
         }
 
@@ -144,12 +140,10 @@
             transform: translateX(5px);
         }
 
-        /* 动画类 */
         @keyframes textReveal {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- 右侧导航区 (Gallery) --- */
         .slider-nav {
             display: flex;
             gap: 15px;
@@ -166,7 +160,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: all 0.6s var(--transition-curve);
-            filter: brightness(0.6) grayscale(0.6); /* 未选中时黑白感 */
+            filter: brightness(0.6) grayscale(0.6);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -177,9 +171,8 @@
             transition: transform 0.8s ease;
         }
 
-        /* 激活状态 */
         .nav-card.active {
-            width: 180px; /* 变得更宽，像一张照片 */
+            width: 180px;
             height: 260px;
             filter: brightness(1) grayscale(0);
             border: 1px solid rgba(255,255,255,0.8);
@@ -191,7 +184,6 @@
             transform: scale(1.15);
         }
 
-        /* 标签 */
         .nav-info {
             position: absolute;
             bottom: 0;
@@ -202,7 +194,7 @@
             color: #fff;
             opacity: 0;
             transform: translateY(20px);
-            transition: 0.4s 0.1s; /* 稍微延迟 */
+            transition: 0.4s 0.1s;
         }
 
         .nav-info span {
@@ -224,7 +216,6 @@
             transform: translateY(0);
         }
 
-        /* --- 移动端适配 --- */
         @media (max-width: 900px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -248,19 +239,18 @@
 
             .slider-nav {
                 width: 100%;
-                justify-content: flex-start; /* 靠左对齐 */
-                overflow-x: auto; /* 允许横向滑动 */
+                justify-content: flex-start;
+                overflow-x: auto;
                 padding-bottom: 20px;
                 gap: 10px;
             }
             
-            /* 隐藏滚动条 */
             .slider-nav::-webkit-scrollbar {
                 display: none;
             }
 
             .nav-card {
-                flex-shrink: 0; /* 防止挤压 */
+                flex-shrink: 0;
             }
         }
     </style>
@@ -275,34 +265,34 @@
             <h1 id="title">Hello,<br>I'm Fang.</h1>
             <p id="desc">这里是我的世界。目前我已拥有呼吸24年的空气呼吸经验。</p>
             <a href="#" id="link" class="cta-btn">
-                Read More <i class="fas fa-arrow-right"></i>
+                Contact Me <i class="fas fa-arrow-right"></i>
             </a>
         </div>
 
         <div class="slider-nav">
             <div class="nav-card active" onclick="updateSlider(0)">
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" alt="Fang">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop" alt="Fang">
                 <div class="nav-info">
                     <span>01</span>
                     <h4>我是 Fang</h4>
                 </div>
             </div>
             <div class="nav-card" onclick="updateSlider(1)">
-                <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" alt="Freedom">
+                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop" alt="Freedom">
                 <div class="nav-info">
                     <span>02</span>
                     <h4>生活态度</h4>
                 </div>
             </div>
             <div class="nav-card" onclick="updateSlider(2)">
-                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop" alt="Work">
+                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop" alt="Work">
                 <div class="nav-info">
                     <span>03</span>
                     <h4>我的创造</h4>
                 </div>
             </div>
             <div class="nav-card" onclick="updateSlider(3)">
-                <img src="https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&w=2071&auto=format&fit=crop" alt="Contact">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1974&auto=format&fit=crop" alt="Contact">
                 <div class="nav-info">
                     <span>04</span>
                     <h4>联系我</h4>
@@ -312,31 +302,35 @@
     </div>
 
     <script>
-        // --- 个性化数据配置 ---
         const slides = [
             {
                 title: "Hello,<br>I'm Fang.",
                 desc: "圣洁者堕落，禁欲者高潮，极致的反差令人着迷，极致的性感莫过于此",
-                img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop",
-                link: "#about"
+                img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
+                link: "#about" // 页面内跳转（这里是演示，不会跳）
             },
             {
                 title: "Born<br>Free.",
                 desc: "真心就像内裤，大家都穿在身上，谁也不知道对方有没有穿，但是我戴在头上，你第一眼就可以看到我是真心的",
-                img: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop",
+                img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop",
                 link: "#freedom"
             },
             {
                 title: "Create<br>& Build.",
                 desc: "每个人都着急说话，每个人都没有把话说完。",
-                img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop",
+                img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop",
                 link: "#work"
             },
             {
                 title: "Let's<br>Talk.",
                 desc: "别犹豫",
-                img: "https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&w=2071&auto=format&fit=crop",
-                link: "333333222222"
+                img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1974&auto=format&fit=crop",
+                /* 👇 修复重点在这里：
+                   1. 如果你想让它发邮件，用 "mailto:你的邮箱"
+                   2. 如果你想让它打电话（手机端有效），用 "tel:333333222222"
+                   3. 暂时没想好就填 "#"
+                */
+                link: "#" 
             }
         ];
 
@@ -348,7 +342,6 @@
 
         let currentIndex = 0;
 
-        // 初始化
         function init() {
             slides.forEach((slide, index) => {
                 const img = document.createElement('img');
@@ -361,12 +354,10 @@
             animateText();
         }
 
-        // 切换逻辑
         function updateSlider(index) {
             if (index === currentIndex && index !== 0) return; 
             currentIndex = index;
 
-            // 背景切换
             const bgImages = document.querySelectorAll('.bg-image');
             bgImages.forEach(img => {
                 if(parseInt(img.dataset.index) === index) {
@@ -376,7 +367,6 @@
                 }
             });
 
-            // 文字切换（淡出 -> 更改 -> 淡入）
             resetTextAnimation(() => {
                 titleEl.innerHTML = slides[index].title;
                 descEl.innerText = slides[index].desc;
@@ -384,7 +374,6 @@
                 animateText();
             });
 
-            // 卡片高亮
             cards.forEach((card, i) => {
                 if (i === index) {
                     card.classList.add('active');
@@ -402,21 +391,18 @@
             titleEl.style.opacity = '0';
             descEl.style.opacity = '0';
             linkEl.style.opacity = '0';
-            setTimeout(callback, 150); // 稍微快一点的切换节奏
+            setTimeout(callback, 150);
         }
 
         function animateText() {
             titleEl.style.animation = 'textReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards';
-            
             descEl.style.animation = 'textReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards';
             descEl.style.animationDelay = '0.1s';
-            
             linkEl.style.animation = 'textReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards';
             linkEl.style.animationDelay = '0.2s';
         }
 
         window.onload = init;
-
     </script>
 </body>
 </html>
