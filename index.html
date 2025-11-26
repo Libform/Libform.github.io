@@ -46,13 +46,13 @@
             position: relative; z-index: 10; width: 100%; height: 100%;
             display: grid; grid-template-columns: 1.2fr 1fr;
             padding: 0 8vw; align-items: center;
-            transition: transform 0.5s var(--transition-curve); /* 用于打开库时的缩放效果 */
+            transition: transform 0.5s var(--transition-curve), filter 0.5s;
         }
         
-        /* 当库打开时，主界面稍微后退 */
+        /* 库打开时，主界面后退并模糊 */
         .main-container.library-open {
-            transform: scale(0.95);
-            filter: blur(5px) brightness(0.5);
+            transform: scale(0.92);
+            filter: blur(8px) brightness(0.4);
             pointer-events: none;
         }
 
@@ -132,13 +132,12 @@
         .nav-info h4 { font-size: 1rem; font-weight: 500; letter-spacing: 1px; }
         .nav-card.active .nav-info { opacity: 1; transform: translateY(0); }
 
-        /* --- 知识库 Modal (Pop-up) --- */
+        /* --- 知识库 Modal (核心修改) --- */
         .library-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 100;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(15px);
-            display: flex; justify-content: flex-end; /* 靠右滑出 */
+            background: rgba(0,0,0,0.6); /* 稍微透明一点 */
+            display: flex; justify-content: flex-end;
             opacity: 0; pointer-events: none;
             transition: opacity 0.4s ease;
         }
@@ -147,61 +146,108 @@
             opacity: 1; pointer-events: all;
         }
 
-        .library-content {
-            width: 60%; /* 占据右侧 60% */
-            height: 100%;
+        /* 右侧面板 */
+        .library-panel {
+            width: 65%; height: 100%;
             background: #111;
             border-left: 1px solid rgba(255,255,255,0.1);
-            padding: 60px 80px;
-            overflow-y: auto;
-            transform: translateX(100px);
+            transform: translateX(100%);
             transition: transform 0.5s var(--transition-curve);
+            display: flex; flex-direction: column;
+            position: relative;
         }
 
-        .library-modal.active .library-content {
+        .library-modal.active .library-panel {
             transform: translateX(0);
         }
 
-        .close-btn {
-            position: absolute; top: 40px; right: 40px;
-            background: none; border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; width: 40px; height: 40px; border-radius: 50%;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        /* 顶部工具栏 */
+        .lib-toolbar {
+            height: 80px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(17,17,17,0.95);
+        }
+
+        .lib-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; letter-spacing: 1px; }
+
+        .close-lib-btn {
+            background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;
+            transition: 0.3s; opacity: 0.7;
+        }
+        .close-lib-btn:hover { opacity: 1; transform: rotate(90deg); }
+
+        /* 内容区域 */
+        .lib-content-area {
+            flex: 1; overflow-y: auto; padding: 50px; position: relative;
+        }
+
+        /* 1. 列表视图 (List View) */
+        .lib-list-view {
+            transition: all 0.4s ease;
+        }
+        
+        .lib-item-card {
+            display: block;
+            padding: 30px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none; color: #fff;
+        }
+
+        .lib-item-card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(10px);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .item-meta { font-size: 0.8rem; color: #666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .item-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
+        .item-desc { color: #999; font-size: 0.95rem; line-height: 1.6; }
+
+        /* 2. 文章详情视图 (Article View) - 默认隐藏 */
+        .lib-article-view {
+            position: absolute; top: 0; left: 0; width: 100%; min-height: 100%;
+            padding: 50px;
+            background: #111;
+            transform: translateX(50px); opacity: 0; pointer-events: none;
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        /* 激活阅读模式 */
+        .lib-content-area.reading-mode .lib-list-view {
+            transform: translateX(-50px); opacity: 0; pointer-events: none;
+        }
+        .lib-content-area.reading-mode .lib-article-view {
+            transform: translateX(0); opacity: 1; pointer-events: all;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            display: inline-flex; align-items: center;
+            color: #888; cursor: pointer; font-size: 0.9rem; margin-bottom: 30px;
             transition: 0.3s;
         }
-        .close-btn:hover { background: #fff; color: #000; }
+        .back-btn:hover { color: #fff; transform: translateX(-5px); }
+        .back-btn i { margin-right: 8px; }
 
-        .library-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem; margin-bottom: 10px;
-        }
-        .library-header p {
-            color: #888; font-size: 0.9rem; margin-bottom: 50px;
-        }
-
-        /* 笔记列表项 */
-        .note-item {
-            margin-bottom: 40px;
-            padding-bottom: 40px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .note-date { font-size: 0.8rem; color: #666; margin-bottom: 10px; display: block; }
-        .note-title { font-size: 1.8rem; margin-bottom: 20px; font-weight: 600; color: #eee; }
-        
-        .note-body {
-            font-size: 1rem; line-height: 1.8; color: #aaa;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .note-body strong { color: #fff; }
-        .note-body ul { margin-left: 20px; margin-top: 10px; }
-        .note-body li { margin-bottom: 8px; }
+        /* 文章样式 */
+        .article-body h2 { font-size: 2.2rem; margin-bottom: 30px; line-height: 1.3; }
+        .article-body h3 { font-size: 1.4rem; margin: 30px 0 15px 0; color: #eee; }
+        .article-body p { color: #aaa; line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem; }
+        .article-body ul { margin-left: 20px; color: #aaa; line-height: 1.8; }
+        .article-body strong { color: #fff; }
 
         @media (max-width: 900px) {
-            .main-container { padding: 40px 20px; }
-            .library-content { width: 100%; padding: 40px 20px; }
-            .library-header h2 { font-size: 2rem; }
+            .library-panel { width: 100%; }
+            .lib-content-area { padding: 30px; }
+            .lib-article-view { padding: 30px; }
         }
     </style>
 </head>
@@ -240,46 +286,70 @@
     </div>
 
     <div class="library-modal" id="library-modal">
-        <button class="close-btn" onclick="closeLibrary()">
-            <i class="fas fa-times"></i>
-        </button>
-        <div class="library-content">
-            <div class="library-header">
-                <h2>Fang's Library</h2>
-                <p>Thoughts, Notes, and Inspirations.</p>
+        <div class="library-panel">
+            <div class="lib-toolbar">
+                <div class="lib-title">Fang's Library</div>
+                <button class="close-lib-btn" onclick="closeLibrary()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
-            <div class="note-item">
-                <span class="note-date">2025.11.25</span>
-                <h3 class="note-title">陆奇 USTC 创业分享会笔记</h3>
-                <div class="note-body">
-                    <p>每个人都着急说话，每个人都没有把话说完。在这次分享中，陆奇博士谈到了关于创业、机会与个人的深刻见解。</p>
-                    <br>
-                    <strong>1. 关于机会 (Opportunity)</strong>
-                    <p>历史上每一次大的技术变革，都会带来结构性的机会。现在的 AI 浪潮，堪比当年的互联网爆发。我们要寻找那些由于技术边界扩展而新产生的“未被满足的需求”。</p>
-                    <br>
-                    <strong>2. 创始人的特质 (Founder)</strong>
-                    <ul>
-                        <li><strong>Vision (愿景):</strong> 能看到别人看不到的未来。</li>
-                        <li><strong>Execution (执行):</strong> 将愿景落地的能力，速度是关键。</li>
-                        <li><strong>Resilience (韧性):</strong> 面对至暗时刻的坚持。</li>
-                    </ul>
-                    <br>
-                    <strong>3. 也就是行动 (Action)</strong>
-                    <p>陆奇强调，想得再多不如动手去做。在实践中迭代，在反馈中修正。Early adoption 带来的不仅仅是先发优势，更是认知的护城河。</p>
-                    <br>
-                    <p style="font-style: italic; color: #666;">（笔记内容整理自 comydream.github.io）</p>
+            <div class="lib-content-area" id="lib-content-area">
+                
+                <div class="lib-list-view">
+                    
+                    <div class="lib-item-card" onclick="openArticle('article-luqi')">
+                        <div class="item-meta">2025.11.25 · Note</div>
+                        <div class="item-title">陆奇 USTC 创业分享会笔记</div>
+                        <div class="item-desc">每个人都着急说话，每个人都没有把话说完。关于创业、机会与个人的深刻见解。</div>
+                    </div>
+
+                    <div class="lib-item-card" onclick="alert('这是演示条目，您可以稍后添加内容')">
+                        <div class="item-meta">2025.10.15 · Thoughts</div>
+                        <div class="item-title">Less is More: 设计哲学</div>
+                        <div class="item-desc">设计不应该喧宾夺主，而应该像空气一样自然。探讨极简主义在数字产品中的应用。</div>
+                    </div>
+
+                    <div class="lib-item-card" onclick="alert('这是演示条目，您可以稍后添加内容')">
+                        <div class="item-meta">2025.09.01 · Travel</div>
+                        <div class="item-title">逃离城市：Route 66 之旅</div>
+                        <div class="item-desc">在公路上寻找自由的答案。3000公里的孤独与狂欢。</div>
+                    </div>
+
                 </div>
-            </div>
 
-            <div class="note-item">
-                <span class="note-date">2025.10.15</span>
-                <h3 class="note-title">Design Philosophy</h3>
-                <div class="note-body">
-                    <p>Less is more. 设计不应该喧宾夺主，而应该像空气一样自然。</p>
+                <div class="lib-article-view" id="article-luqi">
+                    <div class="back-btn" onclick="backToList()">
+                        <i class="fas fa-arrow-left"></i> Back to Library
+                    </div>
+
+                    <div class="article-body">
+                        <span style="color:#666; font-size:0.9rem;">2025.11.25</span>
+                        <h2>陆奇 USTC 创业分享会笔记</h2>
+                        
+                        <p>每个人都着急说话，每个人都没有把话说完。在这次分享中，陆奇博士谈到了关于创业、机会与个人的深刻见解。</p>
+                        
+                        <h3>1. 关于机会 (Opportunity)</h3>
+                        <p>历史上每一次大的技术变革，都会带来结构性的机会。现在的 AI 浪潮，堪比当年的互联网爆发。我们要寻找那些由于技术边界扩展而新产生的“未被满足的需求”。</p>
+                        
+                        <h3>2. 创始人的特质 (Founder)</h3>
+                        <ul>
+                            <li><strong>Vision (愿景):</strong> 能看到别人看不到的未来。</li>
+                            <li><strong>Execution (执行):</strong> 将愿景落地的能力，速度是关键。</li>
+                            <li><strong>Resilience (韧性):</strong> 面对至暗时刻的坚持。</li>
+                        </ul>
+                        
+                        <h3>3. 也就是行动 (Action)</h3>
+                        <p>陆奇强调，想得再多不如动手去做。在实践中迭代，在反馈中修正。Early adoption 带来的不仅仅是先发优势，更是认知的护城河。</p>
+                        
+                        <br>
+                        <p style="font-style: italic; color: #555; border-top:1px solid #333; padding-top:20px;">
+                            (笔记内容整理自 comydream.github.io)
+                        </p>
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 
@@ -289,34 +359,25 @@
                 title: "Hello,<br>I'm Fang.",
                 desc: "圣洁者堕落，禁欲者高潮，极致的反差令人着迷，极致的性感莫过于此",
                 img: "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                type: "link", // 类型：链接
-                target: "#about",
-                btnText: "About Me"
+                type: "link", target: "#about", btnText: "About Me"
             },
             {
                 title: "Born<br>Free.",
                 desc: "真心就像内裤，大家都穿在身上，谁也不知道对方有没有穿，但是我戴在头上，你第一眼就可以看到我是真心的",
                 img: "https://images.pexels.com/photos/3363364/pexels-photo-3363364.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                type: "link",
-                target: "#freedom",
-                btnText: "Explore"
+                type: "link", target: "#freedom", btnText: "Explore"
             },
             {
-                // [重点修改] 类型改为 'library'，触发 JS 打开弹窗
                 title: "Create<br>& Notes.",
                 desc: "每个人都着急说话，每个人都没有把话说完。—— 陆奇 USTC 创业分享会笔记",
-                img: "https://images.pexels.com/photos/247599/pexels-photo-247599.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                type: "library", 
-                target: "library", 
-                btnText: "Open Library" 
+                img: "https://images.pexels.com/photos/1310787/pexels-photo-1310787.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                type: "library", target: "library", btnText: "Open Library" 
             },
             {
                 title: "Let's<br>Talk.",
                 desc: "别犹豫",
                 img: "https://images.pexels.com/photos/3222415/pexels-photo-3222415.jpeg?auto=compress&cs=tinysrgb&w=1600",
-                type: "email",
-                target: "mailto:example@email.com",
-                btnText: "Send Email"
+                type: "email", target: "mailto:example@email.com", btnText: "Send Email"
             }
         ];
 
@@ -327,6 +388,7 @@
         const cards = document.querySelectorAll('.nav-card');
         const libraryModal = document.getElementById('library-modal');
         const mainContainer = document.getElementById('main-container');
+        const libContentArea = document.getElementById('lib-content-area');
 
         let currentIndex = 0;
 
@@ -347,29 +409,41 @@
             animateText();
         }
 
-        // 处理按钮点击
+        // 按钮点击逻辑
         function handleBtnClick(e) {
-            e.preventDefault(); // 阻止默认跳转
+            e.preventDefault();
             const currentSlide = slides[currentIndex];
-
             if (currentSlide.type === 'library') {
                 openLibrary();
             } else if (currentSlide.type === 'email') {
                 window.location.href = currentSlide.target;
-            } else {
-                // 普通链接逻辑
-                console.log("Navigating to:", currentSlide.target);
             }
         }
 
+        // 打开库
         function openLibrary() {
             libraryModal.classList.add('active');
-            mainContainer.classList.add('library-open'); // 背景虚化
+            mainContainer.classList.add('library-open');
         }
 
+        // 关闭库
         function closeLibrary() {
             libraryModal.classList.remove('active');
             mainContainer.classList.remove('library-open');
+            // 关闭时稍微延迟重置回列表页，体验更好
+            setTimeout(() => {
+                backToList();
+            }, 500);
+        }
+
+        // 打开文章详情
+        function openArticle(articleId) {
+            libContentArea.classList.add('reading-mode');
+        }
+
+        // 返回列表
+        function backToList() {
+            libContentArea.classList.remove('reading-mode');
         }
 
         function updateSlider(index) {
