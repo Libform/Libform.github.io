@@ -3,408 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的成长花园 | 个人主页</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>我的个人主页</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        :root {
-            --bg-color: #f0f4f8;
-            --soil-color: #8d6e63;
-            --tree-trunk: #5d4037;
-            --leaf-color: #66bb6a;
-            --leaf-dark: #43a047;
-            --accent-color: #ff7043; /* 果实颜色 */
+        /* --- CSS 样式部分 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            background-color: var(--bg-color);
-            font-family: 'Nunito', 'Noto Serif SC', sans-serif;
+            width: 100%;
             height: 100vh;
             overflow: hidden;
             display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            position: relative;
-        }
-
-        /* --- UI 控件区域 --- */
-        .ui-controls {
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            z-index: 100;
-            transition: opacity 0.5s;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .water-btn {
-            background: #29b6f6;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(41, 182, 246, 0.4);
-            transition: transform 0.2s, background 0.3s;
-            display: flex;
             align-items: center;
-            gap: 10px;
-            margin: 0 auto;
+            background: #000;
         }
 
-        .water-btn:hover { transform: scale(1.05); background: #039be5; }
-        .water-btn:active { transform: scale(0.95); }
-        .water-btn.disabled { opacity: 0; pointer-events: none; }
-
-        /* --- 树的容器 --- */
-        .garden-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 50px; /* 地面高度 */
-        }
-
-        /* 地面 */
-        .ground {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100px;
-            background: #e0e0e0;
-            border-top: 1px solid #dcdcdc;
-            z-index: 1;
-        }
-
-        /* 树干 (SVG 绘制) */
-        .tree {
-            position: relative;
-            width: 400px;
-            height: 500px;
-            z-index: 2;
-            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform-origin: bottom center;
-            transform: scale(0.2); /* 初始状态：小树苗 */
-        }
-
-        .trunk {
-            fill: var(--tree-trunk);
-            width: 100%;
-            height: 100%;
-        }
-
-        /* 树叶组 */
-        .leaves {
+        /* 全屏背景层 */
+        .background-layer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0;
-            transition: opacity 1s 0.5s;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease-in-out;
+            z-index: 1;
+            /* 黑色遮罩，让文字更清晰 */
+            filter: brightness(0.6); 
         }
 
-        .tree.grown {
-            transform: scale(1); /* 长大状态 */
-        }
-        .tree.grown .leaves {
-            opacity: 1;
-        }
-
-        /* --- 果实 (也是按钮) --- */
-        .fruit {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: var(--accent-color);
-            border-radius: 50%;
+        /* 内容容器 */
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
+            padding: 0 8%; /* 两侧留白 */
+        }
+
+        /* 左侧文字区 */
+        .content-wrapper {
+            max-width: 600px;
+            color: #fff;
+            opacity: 0; /* 初始隐藏，由JS控制显示 */
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.3s;
+        }
+
+        .content-text h1 {
+            font-size: 4rem; /* 大标题字号 */
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .content-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 35px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* 右侧导航区 (卡片列表) */
+        .slider-navigation {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            margin-bottom: 50px; /* 稍微往上提一点 */
+        }
+
+        .nav-card {
+            width: 90px;
+            height: 140px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 3;
-            transform: scale(0); /* 初始不可见 */
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* 选中状态的卡片样式 */
+        .nav-card.active {
+            width: 110px;
+            height: 170px;
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.6);
+            transform: translateY(-10px);
+        }
+
+        .nav-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             transition: transform 0.5s;
         }
-
-        /* 果实上面的叶子装饰 */
-        .fruit::after {
-            content: '';
-            position: absolute;
-            top: -5px;
-            width: 20px;
-            height: 10px;
-            background: var(--leaf-dark);
-            border-radius: 10px 0 10px 0;
-        }
-
-        /* 果实位置 */
-        .f1 { top: 120px; left: 80px; transition-delay: 1.6s; }
-        .f2 { top: 80px; left: 200px; transition-delay: 1.8s; }
-        .f3 { top: 150px; left: 300px; transition-delay: 2.0s; }
-
-        /* 长出果实 */
-        .tree.bloomed .fruit {
-            transform: scale(1);
-        }
-
-        /* 掉落动画 */
-        @keyframes dropToGround {
-            0% { top: var(--start-top); transform: rotate(0deg); }
-            60% { top: 460px; transform: rotate(10deg); } /* 撞击地面 */
-            70% { top: 440px; transform: rotate(-5deg); } /* 弹跳 */
-            100% { top: 460px; transform: rotate(0deg); } /* 停在地面 */
-        }
-
-        .fruit.dropped {
-            animation: dropToGround 1s forwards cubic-bezier(0.6, 0.04, 0.98, 0.335);
-            /* 掉落后变成可交互的按钮状态 */
-            cursor: pointer;
-        }
         
-        .fruit.dropped:hover {
-            transform: scale(1.1) translateY(-5px);
-            background: #ff8a65;
+        .nav-card:hover img {
+            transform: scale(1.1);
         }
 
-        /* --- 弹窗卡片 --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .card {
-            background: white;
-            padding: 40px;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        /* 卡片上的文字标签 */
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 0;
             text-align: center;
-            transform: translateY(20px);
-            transition: transform 0.3s;
-            position: relative;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: #fff;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: 0.3s;
         }
 
-        .modal-overlay.active .card {
-            transform: translateY(0);
+        .nav-card:hover .card-info,
+        .nav-card.active .card-info {
+            opacity: 1;
         }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .card h2 { margin-bottom: 15px; color: var(--tree-trunk); }
-        .card p { color: #666; line-height: 1.8; margin-bottom: 20px; }
-        .card-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
-        
-        /* 浇水动画特效 */
-        .water-drop {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #29b6f6;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 50;
-        }
+        /* 手机端适配 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                justify-content: flex-end; /* 内容靠下 */
+                padding: 40px 20px;
+            }
+            
+            .content-wrapper {
+                text-align: left;
+                margin-bottom: auto; /* 把文字顶上去 */
+                padding-top: 60px;
+            }
 
+            .content-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .slider-navigation {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                justify-content: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="ui-controls" id="uiControls">
-        <h1>你好，我是 [你的名字]</h1>
-        <p style="color:#666; margin-bottom: 20px;">这里是一颗充满可能性的种子。</p>
-        <button class="water-btn" onclick="growTree()">
-            <span>💧</span> 给它浇水
-        </button>
-    </div>
+    <div class="background-layer" id="bg-layer"></div>
 
-    <div class="garden-container">
-        <div class="tree" id="myTree">
-            <svg class="trunk" viewBox="0 0 200 300" preserveAspectRatio="none">
-                <path d="M90,300 Q80,200 60,150 Q40,100 20,80" fill="none" stroke="#5d4037" stroke-width="15" stroke-linecap="round"/>
-                <path d="M110,300 Q120,200 140,150 Q160,100 180,80" fill="none" stroke="#5d4037" stroke-width="15" stroke-linecap="round"/>
-                <path d="M100,300 L100,100" fill="none" stroke="#5d4037" stroke-width="20" stroke-linecap="round"/>
-            </svg>
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content-text">
+                <h1 id="main-title">Personal<br>Interface</h1>
+                <p id="main-desc">这里是我的个人主页。点击右下角的图片，可以切换不同的展示内容。</p>
+                <a href="#" class="btn" id="learn-more-btn">Explore More</a>
+            </div>
+        </div>
+
+        <div class="slider-navigation">
+            <div class="nav-card active" onclick="changeSlide(0)">
+                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop" alt="Profile">
+                <div class="card-info">关于我</div>
+            </div>
             
-            <div class="leaves">
-                <div style="position:absolute; top:20px; left:0px; width:120px; height:120px; background:#66bb6a; border-radius:50%; opacity:0.8;"></div>
-                <div style="position:absolute; top:-20px; left:80px; width:150px; height:150px; background:#43a047; border-radius:50%; opacity:0.9;"></div>
-                <div style="position:absolute; top:30px; left:140px; width:110px; height:110px; background:#81c784; border-radius:50%; opacity:0.8;"></div>
+            <div class="nav-card" onclick="changeSlide(1)">
+                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop" alt="Experience">
+                <div class="card-info">我的经历</div>
             </div>
 
-            <div class="fruit f1" onclick="openModal('about')" style="--start-top: 120px;">
-                经历
+            <div class="nav-card" onclick="changeSlide(2)">
+                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop" alt="Projects">
+                <div class="card-info">项目作品</div>
             </div>
-            <div class="fruit f2" onclick="openModal('skills')" style="--start-top: 80px;">
-                技能
+
+            <div class="nav-card" onclick="changeSlide(3)">
+                <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop" alt="Contact">
+                <div class="card-info">联系我</div>
             </div>
-            <div class="fruit f3" onclick="openModal('contact')" style="--start-top: 150px;">
-                联系
-            </div>
-        </div>
-
-        <div class="ground"></div>
-    </div>
-
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-        <div class="card" id="card-about" style="display:none;">
-            <span class="close-btn" onclick="forceClose()">×</span>
-            <span class="card-icon">📖</span>
-            <h2>我的经历</h2>
-            <p>这里可以写你的个人简介。</p>
-            <p>例如：我有5年的UI设计经验，曾参与过某某APP的从0到1开发，热衷于探索人机交互的新边界。</p>
-        </div>
-
-        <div class="card" id="card-skills" style="display:none;">
-            <span class="close-btn" onclick="forceClose()">×</span>
-            <span class="card-icon">🎨</span>
-            <h2>核心技能</h2>
-            <p>Figma, Sketch, Adobe Creative Suite</p>
-            <p>HTML/CSS 基础, Three.js 探索</p>
-            <p>用户体验研究 & 交互原型设计</p>
-        </div>
-
-        <div class="card" id="card-contact" style="display:none;">
-            <span class="close-btn" onclick="forceClose()">×</span>
-            <span class="card-icon">📬</span>
-            <h2>联系我</h2>
-            <p>期待与您合作创造有趣的项目。</p>
-            <a href="mailto:yourname@example.com" style="color: #29b6f6; font-weight: bold; text-decoration: none;">yourname@example.com</a>
         </div>
     </div>
 
     <script>
-        let step = 0;
-        const tree = document.getElementById('myTree');
-        const btn = document.querySelector('.water-btn');
-        const uiText = document.querySelector('.ui-controls h1');
-
-        function growTree() {
-            if(step === 0) {
-                // 第一步：浇水动画 & 长大
-                createWaterDrops();
-                
-                setTimeout(() => {
-                    tree.classList.add('grown'); // 树变大
-                    btn.innerHTML = '<span>☀️</span> 促进开花'; // 改变按钮文案
-                    uiText.innerText = "它正在茁壮成长...";
-                    step++;
-                }, 500);
-            } 
-            else if (step === 1) {
-                // 第二步：开花结果
-                tree.classList.add('bloomed'); // 果实出现
-                btn.innerHTML = '<span>🍎</span> 收获果实';
-                uiText.innerText = "看！它结果了！";
-                step++;
-            }
-            else if (step === 2) {
-                // 第三步：果实掉落
-                const fruits = document.querySelectorAll('.fruit');
-                
-                uiText.innerText = "点击地上的果实看看吧";
-                btn.classList.add('disabled'); // 隐藏按钮
-
-                // 依次掉落
-                fruits.forEach((f, index) => {
-                    setTimeout(() => {
-                        f.classList.add('dropped');
-                    }, index * 300);
-                });
-                step++;
-            }
-        }
-
-        // 简单的粒子特效：生成水滴
-        function createWaterDrops() {
-            const btnRect = btn.getBoundingClientRect();
-            for(let i=0; i<10; i++) {
-                let drop = document.createElement('div');
-                drop.classList.add('water-drop');
-                document.body.appendChild(drop);
-                
-                let startX = btnRect.left + btnRect.width/2;
-                let startY = btnRect.top;
-
-                drop.style.left = startX + 'px';
-                drop.style.top = startY + 'px';
-
-                // 随机洒落
-                let randomX = (Math.random() - 0.5) * 100;
-                
-                drop.animate([
-                    { transform: `translate(0, 0)`, opacity: 1 },
-                    { transform: `translate(${randomX}px, 200px)`, opacity: 0 }
-                ], {
-                    duration: 800,
-                    easing: 'ease-in'
-                }).onfinish = () => drop.remove();
-            }
-        }
-
-        // 弹窗逻辑
-        const overlay = document.getElementById('modalOverlay');
-        const cards = document.querySelectorAll('.card');
-
-        function openModal(type) {
-            // 只有掉落后才能点击 (通过检测class)
-            const fruit = document.querySelector('.fruit.dropped');
-            if(!fruit && step < 3) return; 
-
-            // 隐藏所有卡片
-            cards.forEach(c => c.style.display = 'none');
-            // 显示对应卡片
-            document.getElementById('card-' + type).style.display = 'block';
-            overlay.classList.add('active');
-        }
-
-        function closeModal(e) {
-            if(e.target === overlay) {
-                overlay.classList.remove('active');
-            }
-        }
+        /* --- JavaScript 逻辑部分 --- */
         
-        function forceClose() {
-             overlay.classList.remove('active');
+        // 这里定义每个页面对应的数据
+        // 将来你想换图片，只需要改这里的 'img' 链接
+        const slides = [
+            {
+                title: "Personal<br>Interface",
+                desc: "你好，我是 Libform。这是一张关于我的个人名片。我专注于 UI 设计与全栈开发，致力于创造令人惊叹的数字体验。",
+                img: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop", 
+                link: "#"
+            },
+            {
+                title: "My<br>Experience",
+                desc: "在过去的几年里，我参与了多个关键项目的设计与落地。从初创公司的 0 到 1，到成熟产品的迭代更新，我积累了丰富的实战经验。",
+                img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop",
+                link: "#"
+            },
+            {
+                title: "Selected<br>Projects",
+                desc: "MOE PLANET 是我最近的得意之作，探索宠物与科技的边界。点击此处查看更多设计细节与代码实现。",
+                img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop",
+                link: "#"
+            },
+            {
+                title: "Get In<br>Touch",
+                desc: "无论是工作机会还是灵感交流，我都非常期待与你联系。发送邮件或访问我的 GitHub 主页。",
+                img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop",
+                link: "mailto:example@email.com"
+            }
+        ];
+
+        const bgLayer = document.getElementById('bg-layer');
+        const mainTitle = document.getElementById('main-title');
+        const mainDesc = document.getElementById('main-desc');
+        const learnMoreBtn = document.getElementById('learn-more-btn');
+        const cards = document.querySelectorAll('.nav-card');
+
+        // 初始化页面
+        function init() {
+            changeSlide(0);
         }
+
+        // 切换函数
+        function changeSlide(index) {
+            const data = slides[index];
+
+            // 1. 切换背景图
+            bgLayer.style.backgroundImage = `url('${data.img}')`;
+
+            // 2. 文字淡出重现效果
+            const textContent = document.querySelector('.content-text');
+            textContent.style.opacity = '0';
+            textContent.style.transform = 'translateY(20px)';
+            textContent.style.transition = 'none'; // 瞬间变透明
+
+            setTimeout(() => {
+                // 更新文字内容
+                mainTitle.innerHTML = data.title;
+                mainDesc.innerText = data.desc;
+                learnMoreBtn.href = data.link;
+
+                // 文字淡入
+                textContent.style.transition = 'all 0.6s ease';
+                textContent.style.opacity = '1';
+                textContent.style.transform = 'translateY(0)';
+            }, 200);
+
+            // 3. 更新卡片高亮状态
+            cards.forEach((card, i) => {
+                if (i === index) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+        }
+
+        // 页面加载完成后启动
+        window.onload = init;
     </script>
 </body>
 </html>
