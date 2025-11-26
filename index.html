@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的个人主页</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         /* --- CSS 样式部分 --- */
@@ -36,8 +35,8 @@
             background-position: center;
             transition: background-image 0.5s ease-in-out;
             z-index: 1;
-            /* 黑色遮罩，让文字更清晰 */
-            filter: brightness(0.6); 
+            /* 黑色遮罩，稍微加深一点，让大卡片更突出 */
+            filter: brightness(0.5); 
         }
 
         /* 内容容器 */
@@ -49,44 +48,46 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 8%; /* 两侧留白 */
+            /* 调整右侧内边距，给大卡片留位置 */
+            padding: 0 5% 0 8%; 
         }
 
         /* 左侧文字区 */
         .content-wrapper {
-            max-width: 600px;
+            max-width: 550px;
             color: #fff;
             opacity: 0; /* 初始隐藏，由JS控制显示 */
             transform: translateY(20px);
-            animation: fadeInUp 0.8s forwards 0.3s;
         }
 
         .content-text h1 {
-            font-size: 4rem; /* 大标题字号 */
-            line-height: 1.1;
-            margin-bottom: 20px;
+            font-size: 4.5rem; /* 稍微加大标题 */
+            line-height: 1;
+            margin-bottom: 25px;
             font-weight: 700;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.7);
         }
 
         .content-text p {
             font-size: 1.1rem;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             opacity: 0.9;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
         }
 
         .btn {
             display: inline-block;
-            padding: 12px 35px;
-            background: rgba(255, 255, 255, 0.2);
+            padding: 14px 40px;
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             color: #fff;
             text-decoration: none;
-            border-radius: 30px;
+            border-radius: 2px; /* 按钮也改成微方角，呼应卡片 */
             font-weight: 500;
             transition: 0.3s;
+            letter-spacing: 1px;
         }
 
         .btn:hover {
@@ -97,93 +98,109 @@
         /* 右侧导航区 (卡片列表) */
         .slider-navigation {
             display: flex;
-            gap: 15px;
+            gap: 10px; /* 卡片间距变小，更紧凑 */
             align-items: flex-end;
-            margin-bottom: 50px; /* 稍微往上提一点 */
+            margin-bottom: 40px;
         }
 
         .nav-card {
-            width: 90px;
-            height: 140px;
-            border-radius: 12px;
+            /* --- 核心修改：卡片变大，去特效 --- */
+            width: 180px;  /* 宽度加大 */
+            height: 260px; /* 高度加大 */
+            border-radius: 0; /* 去掉圆角，变成锋利的切片 */
+            border: none;     /* 去掉边框 */
+            box-shadow: none; /* 去掉阴影 */
+            
             overflow: hidden;
             position: relative;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            border: 2px solid rgba(255,255,255,0.3);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            
+            /* 默认状态半透明，融入背景 */
+            opacity: 0.4; 
+            /* 只保留透明度过渡动画 */
+            transition: opacity 0.4s ease; 
         }
 
         /* 选中状态的卡片样式 */
         .nav-card.active {
-            width: 110px;
-            height: 170px;
-            border-color: #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.6);
-            transform: translateY(-10px);
+            /* 选中时完全不透明，高亮显示，且没有位置和大小变化 */
+            opacity: 1;
+        }
+        
+        /* 鼠标悬停在未选中的卡片上时，稍微亮一点 */
+        .nav-card:hover {
+            opacity: 0.7;
+        }
+        .nav-card.active:hover {
+            opacity: 1;
         }
 
         .nav-card img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
+            /* 确保图片填满且裁剪，不变形 */
+            object-fit: cover; 
+            /* 移除了 transform 的过渡 */
         }
         
-        .nav-card:hover img {
-            transform: scale(1.1);
-        }
+        /* 移除了鼠标悬停图片放大的效果 */
+        /* .nav-card:hover img { transform: scale(1.1); } */
 
-        /* 卡片上的文字标签 */
+        /* 卡片上的文字标签 - 样式微调 */
         .card-info {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 10px 0;
+            padding: 15px 0;
             text-align: center;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: #fff;
-            font-size: 0.75rem;
-            opacity: 0;
-            transition: 0.3s;
-        }
-
-        .nav-card:hover .card-info,
-        .nav-card.active .card-info {
+            /* 渐变背景加深，让文字更清楚 */
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: rgba(255,255,255,0.9);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase; /* 大写看起来更高级 */
+            /* 默认一直显示，不再隐藏 */
             opacity: 1;
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 手机端适配 */
+        /* 手机端适配优化 */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
-                justify-content: flex-end; /* 内容靠下 */
-                padding: 40px 20px;
+                justify-content: center;
+                padding: 60px 20px;
             }
             
             .content-wrapper {
                 text-align: left;
-                margin-bottom: auto; /* 把文字顶上去 */
-                padding-top: 60px;
+                margin-bottom: 40px;
+                padding-top: 0;
             }
 
             .content-text h1 {
-                font-size: 2.5rem;
+                font-size: 3rem;
             }
 
             .slider-navigation {
                 width: 100%;
-                overflow-x: auto;
-                padding-bottom: 10px;
+                /* 允许手机端横向滚动查看大卡片 */
+                overflow-x: auto; 
+                padding-bottom: 20px;
                 justify-content: flex-start;
+                /* 隐藏滚动条 */
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            .slider-navigation::-webkit-scrollbar {
+                display: none; /* Chrome, Safari, Opera */
+            }
+
+            /* 手机上卡片稍微缩小一点点，不然太大了 */
+            .nav-card {
+                width: 140px;
+                height: 200px;
+                flex-shrink: 0; /* 防止卡片被挤压 */
             }
         }
     </style>
@@ -197,38 +214,36 @@
             <div class="content-text">
                 <h1 id="main-title">Personal<br>Interface</h1>
                 <p id="main-desc">这里是我的个人主页。点击右下角的图片，可以切换不同的展示内容。</p>
-                <a href="#" class="btn" id="learn-more-btn">Explore More</a>
+                <a href="#" class="btn" id="learn-more-btn">EXPLORE</a>
             </div>
         </div>
 
         <div class="slider-navigation">
             <div class="nav-card active" onclick="changeSlide(0)">
                 <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2070&auto=format&fit=crop" alt="Profile">
-                <div class="card-info">关于我</div>
+                <div class="card-info">About Me</div>
             </div>
             
             <div class="nav-card" onclick="changeSlide(1)">
                 <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop" alt="Experience">
-                <div class="card-info">我的经历</div>
+                <div class="card-info">Experience</div>
             </div>
 
             <div class="nav-card" onclick="changeSlide(2)">
                 <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop" alt="Projects">
-                <div class="card-info">项目作品</div>
+                <div class="card-info">Projects</div>
             </div>
 
             <div class="nav-card" onclick="changeSlide(3)">
                 <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop" alt="Contact">
-                <div class="card-info">联系我</div>
+                <div class="card-info">Contact</div>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- JavaScript 逻辑部分 --- */
+        /* --- JavaScript 逻辑部分 (保持不变) --- */
         
-        // 这里定义每个页面对应的数据
-        // 将来你想换图片，只需要改这里的 'img' 链接
         const slides = [
             {
                 title: "Personal<br>Interface",
@@ -262,37 +277,29 @@
         const learnMoreBtn = document.getElementById('learn-more-btn');
         const cards = document.querySelectorAll('.nav-card');
 
-        // 初始化页面
         function init() {
             changeSlide(0);
         }
 
-        // 切换函数
         function changeSlide(index) {
             const data = slides[index];
-
-            // 1. 切换背景图
             bgLayer.style.backgroundImage = `url('${data.img}')`;
 
-            // 2. 文字淡出重现效果
             const textContent = document.querySelector('.content-text');
             textContent.style.opacity = '0';
-            textContent.style.transform = 'translateY(20px)';
-            textContent.style.transition = 'none'; // 瞬间变透明
+            textContent.style.transform = 'translateY(30px)'; // 增加一点位移感
+            textContent.style.transition = 'none';
 
             setTimeout(() => {
-                // 更新文字内容
                 mainTitle.innerHTML = data.title;
                 mainDesc.innerText = data.desc;
                 learnMoreBtn.href = data.link;
 
-                // 文字淡入
-                textContent.style.transition = 'all 0.6s ease';
+                textContent.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // 使用更平滑的缓动曲线
                 textContent.style.opacity = '1';
                 textContent.style.transform = 'translateY(0)';
             }, 200);
 
-            // 3. 更新卡片高亮状态
             cards.forEach((card, i) => {
                 if (i === index) {
                     card.classList.add('active');
@@ -302,7 +309,6 @@
             });
         }
 
-        // 页面加载完成后启动
         window.onload = init;
     </script>
 </body>
