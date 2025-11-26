@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fang | Personal Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -41,7 +41,7 @@
             z-index: 2;
         }
 
-        /* --- 主布局 --- */
+        /* --- 主布局 (PC优先，Mobile在下面覆盖) --- */
         .main-container {
             position: relative; z-index: 10; width: 100%; height: 100%;
             display: grid; grid-template-columns: 1.2fr 1fr;
@@ -49,7 +49,6 @@
             transition: transform 0.5s var(--transition-curve), filter 0.5s;
         }
         
-        /* 库打开时，主界面后退并模糊 */
         .main-container.library-open {
             transform: scale(0.92);
             filter: blur(8px) brightness(0.4);
@@ -93,6 +92,7 @@
 
         @keyframes textReveal { to { opacity: 1; transform: translateY(0); } }
 
+        /* --- 导航卡片区 --- */
         .slider-nav {
             display: flex; gap: 15px; align-items: center; justify-content: flex-end; height: 400px;
         }
@@ -104,6 +104,7 @@
             filter: brightness(0.6) grayscale(0.6);
             border: 1px solid rgba(255,255,255,0.1);
             background: #222;
+            flex-shrink: 0; /* 防止手机端卡片被挤扁 */
         }
 
         .nav-card img {
@@ -129,24 +130,21 @@
             color: rgba(255,255,255,0.6); margin-bottom: 5px;
         }
 
-        .nav-info h4 { font-size: 1rem; font-weight: 500; letter-spacing: 1px; }
+        .nav-info h4 { font-size: 1rem; font-weight: 500; letter-spacing: 1px; white-space: nowrap; }
         .nav-card.active .nav-info { opacity: 1; transform: translateY(0); }
 
-        /* --- 知识库 Modal (核心修改) --- */
+        /* --- 知识库 Modal --- */
         .library-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 100;
-            background: rgba(0,0,0,0.6); /* 稍微透明一点 */
+            background: rgba(0,0,0,0.6);
             display: flex; justify-content: flex-end;
             opacity: 0; pointer-events: none;
             transition: opacity 0.4s ease;
         }
 
-        .library-modal.active {
-            opacity: 1; pointer-events: all;
-        }
+        .library-modal.active { opacity: 1; pointer-events: all; }
 
-        /* 右侧面板 */
         .library-panel {
             width: 65%; height: 100%;
             background: #111;
@@ -157,13 +155,10 @@
             position: relative;
         }
 
-        .library-modal.active .library-panel {
-            transform: translateX(0);
-        }
+        .library-modal.active .library-panel { transform: translateX(0); }
 
-        /* 顶部工具栏 */
         .lib-toolbar {
-            height: 80px;
+            height: 80px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 50px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -174,30 +169,25 @@
 
         .close-lib-btn {
             background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;
-            transition: 0.3s; opacity: 0.7;
+            transition: 0.3s; opacity: 0.7; padding: 10px;
         }
         .close-lib-btn:hover { opacity: 1; transform: rotate(90deg); }
 
-        /* 内容区域 */
         .lib-content-area {
             flex: 1; overflow-y: auto; padding: 50px; position: relative;
+            scrollbar-width: none; -webkit-overflow-scrolling: touch; /* 手机顺滑滚动 */
         }
+        .lib-content-area::-webkit-scrollbar { display: none; }
 
-        /* 1. 列表视图 (List View) */
-        .lib-list-view {
-            transition: all 0.4s ease;
-        }
+        /* 列表视图 */
+        .lib-list-view { transition: all 0.4s ease; }
         
         .lib-item-card {
-            display: block;
-            padding: 30px;
+            display: block; padding: 30px;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none; color: #fff;
+            margin-bottom: 20px; border-radius: 8px;
+            cursor: pointer; transition: all 0.3s;
         }
 
         .lib-item-card:hover {
@@ -210,17 +200,14 @@
         .item-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
         .item-desc { color: #999; font-size: 0.95rem; line-height: 1.6; }
 
-        /* 2. 文章详情视图 (Article View) - 默认隐藏 */
+        /* 文章详情视图 */
         .lib-article-view {
             position: absolute; top: 0; left: 0; width: 100%; min-height: 100%;
-            padding: 50px;
-            background: #111;
+            padding: 50px; background: #111;
             transform: translateX(50px); opacity: 0; pointer-events: none;
-            transition: all 0.4s ease;
-            z-index: 2;
+            transition: all 0.4s ease; z-index: 2;
         }
 
-        /* 激活阅读模式 */
         .lib-content-area.reading-mode .lib-list-view {
             transform: translateX(-50px); opacity: 0; pointer-events: none;
         }
@@ -228,26 +215,95 @@
             transform: translateX(0); opacity: 1; pointer-events: all;
         }
 
-        /* 返回按钮 */
         .back-btn {
             display: inline-flex; align-items: center;
-            color: #888; cursor: pointer; font-size: 0.9rem; margin-bottom: 30px;
+            color: #888; cursor: pointer; font-size: 0.9rem; margin-bottom: 40px;
             transition: 0.3s;
         }
         .back-btn:hover { color: #fff; transform: translateX(-5px); }
         .back-btn i { margin-right: 8px; }
 
-        /* 文章样式 */
-        .article-body h2 { font-size: 2.2rem; margin-bottom: 30px; line-height: 1.3; }
-        .article-body h3 { font-size: 1.4rem; margin: 30px 0 15px 0; color: #eee; }
-        .article-body p { color: #aaa; line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem; }
-        .article-body ul { margin-left: 20px; color: #aaa; line-height: 1.8; }
-        .article-body strong { color: #fff; }
+        .article-body { max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
+        .article-header { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 30px; margin-bottom: 40px; }
+        .article-date { color: #666; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .article-title { font-size: 2.5rem; line-height: 1.2; font-weight: 700; color: #fff; }
 
+        .article-content h2 { font-size: 1.8rem; margin: 50px 0 20px 0; color: #fff; font-weight: 600; }
+        .article-content h3 { font-size: 1.4rem; margin: 30px 0 15px 0; color: #ddd; font-weight: 500; }
+        .article-content p { color: #aaa; line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem; text-align: justify; }
+        .article-content ul { margin-left: 20px; color: #aaa; line-height: 1.8; margin-bottom: 30px; }
+        .article-content li { margin-bottom: 10px; }
+        .article-content strong { color: #fff; font-weight: 600; }
+        .article-content blockquote {
+            border-left: 3px solid #fff; padding-left: 20px; margin: 30px 0; color: #ccc; font-style: italic;
+        }
+        .highlight-box {
+            background: rgba(255,255,255,0.05); padding: 25px; border-radius: 8px; margin: 30px 0; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* =========================================
+           📱 移动端适配核心代码 (Responsive)
+           ========================================= */
         @media (max-width: 900px) {
-            .library-panel { width: 100%; }
-            .lib-content-area { padding: 30px; }
-            .lib-article-view { padding: 30px; }
+            /* 1. 主布局改为上下结构 */
+            .main-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between; /* 文字靠上，导航靠下 */
+                padding: 100px 25px 30px 25px;
+            }
+
+            .text-content {
+                padding-right: 0;
+                width: 100%;
+                text-align: left;
+                margin-bottom: auto; /* 自动顶上去 */
+            }
+
+            .text-content h1 {
+                font-size: 3.5rem; /* 字体缩小 */
+                margin-bottom: 20px;
+            }
+            
+            .text-content p {
+                max-width: 100%;
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            /* 2. 导航卡片改为横向滚动 */
+            .slider-nav {
+                width: 100%;
+                height: auto;
+                justify-content: flex-start; /* 靠左排列 */
+                overflow-x: auto; /* 允许滑动 */
+                padding-bottom: 20px; /* 留出滚动条空间 */
+                gap: 12px;
+                /* 隐藏滚动条 */
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .slider-nav::-webkit-scrollbar { display: none; }
+
+            .nav-card {
+                width: 80px; height: 120px; /* 手机上卡片小一点 */
+            }
+            .nav-card.active {
+                width: 110px; height: 170px; /* 激活态也小一点 */
+            }
+
+            /* 3. 知识库弹窗全屏化 */
+            .library-panel {
+                width: 100%; /* 全宽 */
+                border-left: none;
+            }
+
+            .lib-toolbar { padding: 0 25px; }
+            .lib-content-area { padding: 25px; }
+            .lib-article-view { padding: 25px; top: 0; left: 0; }
+
+            .article-title { font-size: 1.8rem; }
+            .item-title { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -297,25 +353,16 @@
             <div class="lib-content-area" id="lib-content-area">
                 
                 <div class="lib-list-view">
-                    
                     <div class="lib-item-card" onclick="openArticle('article-luqi')">
                         <div class="item-meta">2025.11.25 · Note</div>
                         <div class="item-title">陆奇 USTC 创业分享会笔记</div>
                         <div class="item-desc">每个人都着急说话，每个人都没有把话说完。关于创业、机会与个人的深刻见解。</div>
                     </div>
-
-                    <div class="lib-item-card" onclick="alert('这是演示条目，您可以稍后添加内容')">
+                    <div class="lib-item-card" onclick="alert('这是演示条目')">
                         <div class="item-meta">2025.10.15 · Thoughts</div>
-                        <div class="item-title">Less is More: 设计哲学</div>
+                        <div class="item-title">Design Philosophy: Less is More</div>
                         <div class="item-desc">设计不应该喧宾夺主，而应该像空气一样自然。探讨极简主义在数字产品中的应用。</div>
                     </div>
-
-                    <div class="lib-item-card" onclick="alert('这是演示条目，您可以稍后添加内容')">
-                        <div class="item-meta">2025.09.01 · Travel</div>
-                        <div class="item-title">逃离城市：Route 66 之旅</div>
-                        <div class="item-desc">在公路上寻找自由的答案。3000公里的孤独与狂欢。</div>
-                    </div>
-
                 </div>
 
                 <div class="lib-article-view" id="article-luqi">
@@ -324,28 +371,56 @@
                     </div>
 
                     <div class="article-body">
-                        <span style="color:#666; font-size:0.9rem;">2025.11.25</span>
-                        <h2>陆奇 USTC 创业分享会笔记</h2>
+                        <div class="article-header">
+                            <span class="article-date">2025.11.25 · USTC Share</span>
+                            <h1 class="article-title">陆奇 USTC 创业分享会：<br>大模型时代的结构性机会</h1>
+                        </div>
                         
-                        <p>每个人都着急说话，每个人都没有把话说完。在这次分享中，陆奇博士谈到了关于创业、机会与个人的深刻见解。</p>
-                        
-                        <h3>1. 关于机会 (Opportunity)</h3>
-                        <p>历史上每一次大的技术变革，都会带来结构性的机会。现在的 AI 浪潮，堪比当年的互联网爆发。我们要寻找那些由于技术边界扩展而新产生的“未被满足的需求”。</p>
-                        
-                        <h3>2. 创始人的特质 (Founder)</h3>
-                        <ul>
-                            <li><strong>Vision (愿景):</strong> 能看到别人看不到的未来。</li>
-                            <li><strong>Execution (执行):</strong> 将愿景落地的能力，速度是关键。</li>
-                            <li><strong>Resilience (韧性):</strong> 面对至暗时刻的坚持。</li>
-                        </ul>
-                        
-                        <h3>3. 也就是行动 (Action)</h3>
-                        <p>陆奇强调，想得再多不如动手去做。在实践中迭代，在反馈中修正。Early adoption 带来的不仅仅是先发优势，更是认知的护城河。</p>
-                        
-                        <br>
-                        <p style="font-style: italic; color: #555; border-top:1px solid #333; padding-top:20px;">
-                            (笔记内容整理自 comydream.github.io)
-                        </p>
+                        <div class="article-content">
+                            <blockquote>
+                                "每个人都着急说话，每个人都没有把话说完。"
+                            </blockquote>
+                            
+                            <p>这是陆奇博士在 USTC 分享会上的开场白。在这次长达两小时的深度分享中，他没有谈论浮躁的风口，而是从历史的维度、物理学的底层逻辑，重新拆解了我们当下面临的时代机遇。以下是我的完整笔记整理。</p>
+
+                            <h2>一、历史的进程：信息与能源</h2>
+                            <p>陆奇博士首先抛出了一个宏大的框架：人类社会的发展，本质上是<strong>信息（Information）</strong>与<strong>能源（Energy）</strong>系统的不断重构。</p>
+                            <ul>
+                                <li><strong>农业时代：</strong>我们利用光合作用（能源），通过简单的语言和文字（信息）协作。</li>
+                                <li><strong>工业时代：</strong>化石能源带来了爆发式增长，电力成为了通用能源。</li>
+                                <li><strong>数字时代：</strong>计算机和互联网将信息的边际成本降到了接近零。</li>
+                            </ul>
+                            <p>而现在，我们正处于一个全新的拐点：<strong>System 2 的边际成本正在归零</strong>。如果说互联网解决了信息的传输问题，那么大模型（LLM）正在解决信息的“理解”与“生成”问题。这不仅仅是技术的升级，更是生产力范式的转移。</p>
+
+                            <h2>二、关于机会 (Opportunity)</h2>
+                            <p>很多同学问，现在还是创业的好时机吗？陆奇的回答是坚定的：<strong>Yes, but different.</strong></p>
+                            <p>历史上每一次大的技术变革，都会带来结构性的机会。现在的 AI 浪潮，堪比当年的互联网爆发，甚至更剧烈。但机会不等于跟风。</p>
+                            <div class="highlight-box">
+                                <strong>我们要寻找什么机会？</strong><br>
+                                寻找那些由于技术边界扩展而新产生的“未被满足的需求”。不要去做“更好的搜索”，而要去做“搜索解决不了的问题”。
+                            </div>
+
+                            <h2>三、创始人的特质 (Founder)</h2>
+                            <p>在这样的时代，什么样的创始人能赢？陆奇总结了三个核心特质：</p>
+                            <h3>1. Vision (愿景)</h3>
+                            <p>能看到别人看不到的未来。这不仅仅是想象力，更是一种对未来的<strong>非共识的正确判断</strong>。你必须相信一些别人暂时不相信，但即使在逻辑上成立的事情。</p>
+
+                            <h3>2. Execution (执行)</h3>
+                            <p>将愿景落地的能力。速度是关键。在 AI 时代，技术迭代以周为单位，慢一步就是死。执行力不是瞎忙，而是快速闭环（Feedback Loop）。</p>
+
+                            <h3>3. Resilience (韧性)</h3>
+                            <p>创业是九死一生的游戏。面对至暗时刻的坚持，是区分优秀者与伟大者的分水岭。陆奇提到：“乐观是创业者的责任。”</p>
+
+                            <h2>四、也就是行动 (Action)</h2>
+                            <p>最后，也是最重要的一点：<strong>Action.</strong></p>
+                            <p>陆奇强调，想得再多不如动手去做。在实践中迭代，在反馈中修正。Early adoption 带来的不仅仅是先发优势，更是认知的护城河。</p>
+                            <p>不要在岸上讨论游泳的姿势。跳下去，感受水的温度，这才是唯一的路径。</p>
+
+                            <br>
+                            <p style="font-style: italic; color: #555; border-top:1px solid #333; padding-top:20px;">
+                                (本文内容整理自 comydream.github.io / Notes by Fang)
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -369,8 +444,9 @@
             },
             {
                 title: "Create<br>& Notes.",
-                desc: "每个人都着急说话，每个人都没有把话说完。—— 陆奇 USTC 创业分享会笔记",
-                img: "https://images.pexels.com/photos/1310787/pexels-photo-1310787.jpeg?auto=compress&cs=tinysrgb&w=1600",
+                desc: "每个人都着急说话，每个人都没有把话说完。"
+                // 稳定的深色岩石流体图
+                img: "https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2070&auto=format&fit=crop",
                 type: "library", target: "library", btnText: "Open Library" 
             },
             {
@@ -409,7 +485,6 @@
             animateText();
         }
 
-        // 按钮点击逻辑
         function handleBtnClick(e) {
             e.preventDefault();
             const currentSlide = slides[currentIndex];
@@ -420,28 +495,21 @@
             }
         }
 
-        // 打开库
         function openLibrary() {
             libraryModal.classList.add('active');
             mainContainer.classList.add('library-open');
         }
 
-        // 关闭库
         function closeLibrary() {
             libraryModal.classList.remove('active');
             mainContainer.classList.remove('library-open');
-            // 关闭时稍微延迟重置回列表页，体验更好
-            setTimeout(() => {
-                backToList();
-            }, 500);
+            setTimeout(() => { backToList(); }, 500);
         }
 
-        // 打开文章详情
         function openArticle(articleId) {
             libContentArea.classList.add('reading-mode');
         }
 
-        // 返回列表
         function backToList() {
             libContentArea.classList.remove('reading-mode');
         }
